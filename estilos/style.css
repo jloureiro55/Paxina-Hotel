@@ -1,8 +1,67 @@
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Cormorant Garamond', serif;
+    
+}
+
+.container-fluid header nav ul li a{
+    color: rgb(140, 140, 41)!important;
+    font-size: 28px;
+}
+
 .logo{
+   
     height:100px;
     width: 100px;
 }
 
 #busqueda{
-    width: max-content;
+    align-items: center;
+    padding: 18px;
+    width: auto;
 }
+
+#botonBuscar {
+    margin-top: 20px;
+    padding: 10px;
+    width: 50%;
+}
+
+
+.calendario{
+    height: 100vh;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url("../img/portada/portada.jpg");
+}
+
+
+
+
+.sombra {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -ms-transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    margin: auto;
+    width: 30%;
+}
+
+.bg-info {
+    background-color: rgb(0, 2, 130)!important;
+}
+
