@@ -95,7 +95,7 @@ body{
 .sombra {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 60%;
     -ms-transform: translate(-50%,-50%);
     -webkit-transform: translate(-50%,-50%);
     transform: translate(-50%,-50%);
@@ -121,4 +121,16 @@ body{
 
   @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
 
- 
+ footer{
+    color: rgb(140, 140, 41)!important;
+ }
+
+
+ .logofooter{
+     width: 10em;
+ }
+
+ footer ul li a{
+    color: rgb(140, 140, 41)!important;
+    text-decoration: none;
+ }
