@@ -130,6 +130,15 @@ body{
 
   }
 
+  #letra {
+    font-family: 'Charm', cursive;
+    font-size: 1.6vw;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    color: rgb(0, 2, 130);
+
+  }
+
  #servicios h1{
     font-size: 3vw;
     font-family: 'Charm', cursive;
@@ -153,6 +162,10 @@ body{
 
  a {
     text-decoration: none;
+ }
+
+ .cambio{
+     text-align: center;
  }
 
 @media(max-width: 768px){
@@ -181,3 +194,4 @@ body{
         font-size: 7vw;
     }
 }
+
