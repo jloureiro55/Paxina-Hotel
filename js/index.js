@@ -20,3 +20,19 @@ window.onload = function () {
             });
     }
 };
+
+$(document).ready(function () {
+
+    function callback() {
+        setTimeout(function () {
+            $("#effect").removeAttr("style").hide().fadeIn();
+        }, 1000);
+    };
+
+    document.getElementById('effect').addEventListener('click', e => {
+        e.preventDefault();
+        // Efecto Jquery UI
+        $("#effect").effect('bounce', {}, 500, callback);
+    });
+
+});
