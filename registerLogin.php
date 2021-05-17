@@ -16,8 +16,9 @@
     <?php
     require_once 'database.php';
     require_once 'functions/functions.php';
+    var_dump($_POST);
 
-    if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['name'])) { // Comprobamos si se envio el formulario
+    if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['register'])) { // Comprobamos si se envio el formulario
         $name = $_POST['name'];
         $phone = $_POST['phone'];
         $password = $_POST['password'];
@@ -56,7 +57,17 @@
                 }
             }
         }
+    }else if(($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['userlog'])) {
+        echo "entro";
+        $user = $_POST['userlog'];
+        $pass = $_POST['passlog'];
+        $pass = encryptionPassword($pass);
+        if(check_user($user, $pass)){
+            $datos = check_user($user, $pass);
+            echo "Bienvenido,"+$datos['user'];
+        }
     }
+    
     ?>
     <body>
         <div class="container-fluid"><!--Contenedor principal-->
@@ -75,14 +86,16 @@
 
 
                                     <div class="login-space">
+                                        <form class="form-register" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
                                         <div class="login">
-                                            <div class="group"> <label for="user" class="label">Username</label> <input id="user" type="text" class="input" placeholder="Enter your username"> </div>
-                                            <div class="group"> <label for="pass" class="label">Password</label> <input id="pass" type="password" class="input" data-type="password" placeholder="Enter your password"> </div>
+                                            <div class="group"> <label for="user" class="label">Username</label> <input name="userlog" id="user" type="text" class="input" placeholder="Enter your username"> </div>
+                                            <div class="group"> <label for="pass" class="label">Password</label> <input name="passlog" id="pass" type="password" class="input" data-type="password" placeholder="Enter your password"> </div>
                                             <div class="group"> <input id="check" type="checkbox" class="check" checked> <label for="check"><span class="icon"></span> Keep me Signed in</label> </div>
-                                            <div class="group"> <input type="submit" id="effect" class="button" value="Sign In"> </div>
+                                            <div class="group"> <input type="submit" id="effect" class="button" name="login" value="Sign In"> </div>
                                             <div class="hr"></div>
                                             <div class="foot"> <a href="#">Forgot Password?</a> </div>
                                         </div>
+                                            </form>
 
 
                                         <form class="form-register" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
@@ -92,7 +105,7 @@
                                                 <div class="group"> <label for="pass" class="label">Password</label> <input id="pass" type="password" class="input" data-type="password" placeholder="Create your password" name="password"> </div>
                                                 <div class="group"> <label for="pass" class="label">Repeat Password</label> <input id="pass" type="password" class="input" data-type="password" placeholder="Repeat your password" name="repassword"> </div>
                                                 <div class="group"> <label for="pass" class="label">Email Address</label> <input id="pass" type="text" class="input" placeholder="Enter your email address" name="email"> </div>
-                                                <div class="group"> <input type="submit" class="button" value="Sign Up"> </div>
+                                                <div class="group"> <input type="submit" class="button" name="register" value="Sign Up"> </div>
                                                 <div class="foot"> <label for="tab-1">Already Member?</label> </div>
                                             </div>
                                         </form>

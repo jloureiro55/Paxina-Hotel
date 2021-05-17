@@ -39,24 +39,37 @@ function leer_config($fichero_config_BBDD, $esquema) {
     return $resul;
 }
 
-function comprobar_usuario($nombre, $clave) {
-
+function check_user($nombre, $clave) {
+    require_once '/functions/functions.php';
     /*
      * Comprueba los datos que recibe del formulario del login. Si los datos son correctos
      * devuelve un array con dos campos: codRes (el código del restaurante) y correo 
      * con su correo. En caso de error devuelve false
      */
-    $devol = FALSE;
+    try{
+         $devol = FALSE;
     $bd = loadBBDD();
-    $hash = loadPass($nombre);
-    if (password_verify($clave, $hash)) {
-        $ins = "select codRes, correo from restaurantes where correo = '$nombre' ";
-        $resul = $bd->query($ins);
-        if ($resul->rowCount() === 1) {
-            $devol = $resul->fetch();
+    $sql = "select  password,rol,telf from usuarios where nombre="+$nombre;
+    $statement = $bd->prepare($sql);
+    if($statement->execute(array($nombre))){
+        $row = $statement->fetch();
+        if($row){
+            $hashed = $row['password'];
+            $rol = $row['rol'];
+            if(validatePass($clave, $hashed)){
+                return array($nombre,$rol);
+            }else{
+                return false;
+            }
         }
     }
-    return $devol;
+     } catch (Exception $ex) {
+         echo "Error ".$ex->getCode()." ".$ex->getMessage();
+     }finally {
+         $statement = null;
+         $bd = null;
+     }
+    
 }
 
 

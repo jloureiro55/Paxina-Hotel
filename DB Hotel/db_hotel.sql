@@ -1,10 +1,10 @@
 -- DB Daniel Pérez Fernández 3º Versión
 
-drop database if exists hotel; -- Eliminamos la base de datos si existe
+drop database if exists teis3_hotel; -- Eliminamos la base de datos si existe
 
-create database hotel; -- Creamos la base de datos
+create database teis3_hotel; -- Creamos la base de datos
 
-use hotel; -- Establemos nuestra db como principal
+use teis3_hotel; -- Establemos nuestra db como principal
 
 -- Creamos la tabla Roles
 create table Roles(
