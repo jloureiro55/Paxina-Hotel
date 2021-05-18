@@ -65,7 +65,7 @@
 
         $bd = loadBBDD();
 
-        $sql = "select nombre, password from usuarios where nombre = :nameUser ";
+        $sql = "select nombre, password,rol_usuario from usuarios where nombre = :nameUser ";
 
         $consult = $bd->prepare($sql);
 
@@ -79,6 +79,9 @@
 
         if (count($result) > 0 && password_verify($passwordLogin, $hash)) {
             session_start();
+            $_SESSION['usuario']=$result['nombre'];
+            $_SESSION['rol']=$result['rol_usuario'];
+            header("location:index.php");
         } else {
             echo "error";
         }
