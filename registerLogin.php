@@ -16,7 +16,6 @@
     <?php
     require_once 'database.php';
     require_once 'functions/functions.php';
-    var_dump($_POST);
 
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['register'])) { // Comprobamos si se envio el formulario
         $name = $_POST['name'];
@@ -57,14 +56,31 @@
                 }
             }
         }
-    }else if(($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['userlog'])) {
-        echo "entro";
-        $user = $_POST['userlog'];
-        $pass = $_POST['passlog'];
-        $pass = encryptionPassword($pass);
-        if(check_user($user, $pass)){
-            $datos = check_user($user, $pass);
-            echo "Bienvenido,"+$datos['user'];
+    } 
+        
+    if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['login'])) {
+
+        $nameLogin = $_POST['user'];
+        $passwordLogin = $_POST['pass'];
+
+        $bd = loadBBDD();
+
+        $sql = "select nombre, password from usuarios where nombre = :nameUser ";
+
+        $consult = $bd->prepare($sql);
+
+        $consult->bindParam(':nameUser', $nameLogin);
+
+        $consult->execute();
+
+        $result = $consult->fetch(PDO::FETCH_ASSOC);
+        $hash = $result['password'];
+        $hash = substr( $hash, 0, 60 );
+
+        if (count($result) > 0 && password_verify($passwordLogin, $hash)) {
+            session_start();
+        } else {
+            echo "error";
         }
     }
     
@@ -88,10 +104,10 @@
                                     <div class="login-space">
                                         <form class="form-register" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
                                         <div class="login">
-                                            <div class="group"> <label for="user" class="label">Username</label> <input name="userlog" id="user" type="text" class="input" placeholder="Enter your username"> </div>
-                                            <div class="group"> <label for="pass" class="label">Password</label> <input name="passlog" id="pass" type="password" class="input" data-type="password" placeholder="Enter your password"> </div>
+                                            <div class="group"> <label for="user" class="label">Username</label> <input name="user" id="user" type="text" class="input" placeholder="Enter your username"> </div>
+                                            <div class="group"> <label for="pass" class="label">Password</label> <input name="pass" id="pass" type="password" class="input" data-type="password" placeholder="Enter your password"> </div>
                                             <div class="group"> <input id="check" type="checkbox" class="check" checked> <label for="check"><span class="icon"></span> Keep me Signed in</label> </div>
-                                            <div class="group"> <input type="submit" id="effect" class="button" name="login" value="Sign In"> </div>
+                                            <div class="group"> <input type="submit" class="button" name="login" value="Sign In"> </div>
                                             <div class="hr"></div>
                                             <div class="foot"> <a href="#">Forgot Password?</a> </div>
                                         </div>
