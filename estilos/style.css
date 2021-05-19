@@ -392,3 +392,8 @@ a {
 ::placeholder {
     color: #727272
 }
+
+.avatar{
+    height: auto;
+    margin: auto;
+}
