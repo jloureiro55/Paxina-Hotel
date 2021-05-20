@@ -71,4 +71,8 @@ function check_user($nombre, $clave) {
          $bd = null;
      }
 }
+
+function loadrooms(){
+    
+}
 ?>

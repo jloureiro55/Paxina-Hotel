@@ -29,11 +29,11 @@
                    <a class="fab fa-instagram fa-3x ms-3"></a>
                  </div><br>
                    <h4>check in</h4>
-                   <form action="" class="d-flex flex-column" id="busqueda">
-                       <input type="date" id="entrada" class=""><br>
+                   <form class="d-flex flex-column" id="busqueda" method="post" action="rooms.php">
+                       <input type="date" id="entrada" name="checkin" class="" min="<?php echo date('Y-m-d'); ?>"><br>
                        <h4>check out</h4>
-                       <input type="date" id="salida" class=""><br>
-                       <input type="submit" value="Search" id="botonBuscar" class="btn btn-secondary" alt="boton de buscar">
+                       <input type="date" id="salida" class="" name="checkout" min="<?php echo date('Y-m-d'); ?>"><br>
+                       <input type="submit" value="Search" id="botonBuscar" class="btn btn-secondary" alt="boton de buscar" name="busqueda">
                    </form>
                  </div>
                </div> 

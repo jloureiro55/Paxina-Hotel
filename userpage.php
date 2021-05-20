@@ -22,6 +22,9 @@ and open the template in the editor.
             }
         </style>
         <title>Pagina de <?php echo $_SESSION['usuario']; ?></title>
+        <?php if(!isset($_SESSION['usuario'])){
+            header('location:index.php');
+        } ?>
     </head>
     <body>
         <?php
@@ -35,7 +38,7 @@ and open the template in the editor.
                 <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Overview</div>
                 <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Reserves</div>
                 <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Preferences</div>
-                <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Log Out</div>
+                <a href="#" id="logout"><div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Log Out</div></a>
             </div>
             <div class="col-10 p-0 border border-primary d-flex d-flex-column">
                 <div class="col-12 border border-primary">
@@ -45,6 +48,13 @@ and open the template in the editor.
         <?php require_once 'footer.php';?>
         
     </body>
+    <script>
+        document.getElementById('logout').addEventlistener('click',cerrar);
+        function cerrar(){
+            <?php session_destroy();
+                header('Refresh:0');?>
+        }
+    </script>
     <script src="externo/jquery/jquery-3.5.1.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
