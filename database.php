@@ -72,7 +72,37 @@ function check_user($nombre, $clave) {
      }
 }
 
-function loadrooms(){
-    
+function loadrooms($checkin,$checkout){
+    try{
+        $bd = loadBBDD();
+        $checkin = strtotime($checkin);
+        $checkout = strtotime($checkout);
+        $sql = "SELECT * FROM `reservas` WHERE `fecha_reserva` BETWEEN :param_entrada AND :param_salida";
+        
+        $statement=$bd->prepare($sql);
+        $statement->bindValue('param_entrada',$checkin, PDO::PARAM_STR);
+        $statement->bindValue('param_salida',$checkout,PDO::PARAM_STR);
+        if($statement->execute()){
+            var_dump($statement);
+            $row = $statement->fetch();
+            var_dump($row);
+            if($row){
+                var_dump($row);
+            }
+        }else{
+            echo "error";
+        }
+        
+    } catch (Exception $ex) {
+        echo "Error ".$ex->getCode()." ".$ex->getMessage();
+    }finally {
+         $statement = null;
+         $bd = null;
+     }
 }
+
+    function loadreserves(){
+        $bd = loadBBDD();
+        $sql = "select * from "
+    }
 ?>

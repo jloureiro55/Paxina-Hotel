@@ -18,7 +18,12 @@
     require_once 'functions/functions.php';
     session_start();
     if(isset($_POST['busqueda'])){
-        var_dump($_POST);
+        $checkin = $_POST['checkin'];
+        $checkout = $_POST['checkout'];
+        loadrooms($checkin,$checkout);
+    }
+    if(!isset($_POST['busqueda'])){
+        loadallrooms();
     }
     ?>
     <body>
