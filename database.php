@@ -103,6 +103,6 @@ function loadrooms($checkin,$checkout){
 
     function loadreserves(){
         $bd = loadBBDD();
-        $sql = "select * from "
+        $sql = "select * from ";
     }
 ?>

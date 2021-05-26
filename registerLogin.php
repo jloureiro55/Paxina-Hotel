@@ -14,8 +14,14 @@
     </head>
 
     <?php
-    require_once 'database.php';
+    require_once 'ClassDB/conectDB.php';
+    //require_once 'database.php';
     require_once 'functions/functions.php';
+
+    use \conectDB\ConectDB as db;
+
+    $rol = 'conexion';
+    $db = new db($rol);
 
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['register'])) { // Comprobamos si se envio el formulario
         $name = $_POST['name'];
@@ -23,70 +29,32 @@
         $password = $_POST['password'];
         $repassword = $_POST['repassword'];
         $email = $_POST['email'];
-        $rol = 2;
+
+
 
         $pass = encryptionPassword($password);
 
-        $sql = "insert into usuarios (nombre,telf,password,email,rol_usuario) values(?,?,?,?,?)";
-       
+
         if (phone($phone) == true && !empty($phone)) {
 
             if ($password == $repassword) {
 
                 if (validateEmail($email) == true) {
-                    
-                    $bd = loadBBDD();
-                    
-                    if(($smtp = $bd->prepare($sql))){
-                        
-                        $smtp->bindValue(1, $name, \PDO::PARAM_STR);
-                        $smtp->bindValue(2, $phone,\PDO::PARAM_INT);
-                        $smtp->bindValue(3, $pass,\PDO::PARAM_STR);
-                        $smtp->bindValue(4, $email,\PDO::PARAM_STR);
-                        $smtp->bindValue(5, $rol,\PDO::PARAM_STR);
-                        
-                    
-              
-                        if($smtp->execute()){
-                           
-                        }
-                    }
-                    
-                   
+
+                    // Llamada función
+                    $db->registerUser($name, $phone, $pass, $email);
                 }
             }
         }
-    } 
-        
+    }
+
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['login'])) {
 
         $nameLogin = $_POST['user'];
         $passwordLogin = $_POST['pass'];
 
-        $bd = loadBBDD();
-
-        $sql = "select nombre, password,rol_usuario from usuarios where nombre = :nameUser ";
-
-        $consult = $bd->prepare($sql);
-
-        $consult->bindParam(':nameUser', $nameLogin);
-
-        $consult->execute();
-
-        $result = $consult->fetch(PDO::FETCH_ASSOC);
-        $hash = $result['password'];
-        $hash = substr( $hash, 0, 60 );
-
-        if (count($result) > 0 && password_verify($passwordLogin, $hash)) {
-            session_start();
-            $_SESSION['usuario']=$result['nombre'];
-            $_SESSION['rol']=$result['rol_usuario'];
-            header("location:index.php");
-        } else {
-            echo "error";
-        }
+        $db->loginUser($nameLogin, $passwordLogin);
     }
-    
     ?>
     <body>
         <div class="container-fluid"><!--Contenedor principal-->
@@ -106,15 +74,15 @@
 
                                     <div class="login-space">
                                         <form class="form-register" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
-                                        <div class="login">
-                                            <div class="group"> <label for="user" class="label">Username</label> <input name="user" id="user" type="text" class="input" placeholder="Enter your username"> </div>
-                                            <div class="group"> <label for="pass" class="label">Password</label> <input name="pass" id="pass" type="password" class="input" data-type="password" placeholder="Enter your password"> </div>
-                                            <div class="group"> <input id="check" type="checkbox" class="check" checked> <label for="check"><span class="icon"></span> Keep me Signed in</label> </div>
-                                            <div class="group"> <input type="submit" class="button" name="login" value="Sign In"> </div>
-                                            <div class="hr"></div>
-                                            <div class="foot"> <a href="#">Forgot Password?</a> </div>
-                                        </div>
-                                            </form>
+                                            <div class="login">
+                                                <div class="group"> <label for="user" class="label">Username</label> <input name="user" id="user" type="text" class="input" placeholder="Enter your username"> </div>
+                                                <div class="group"> <label for="pass" class="label">Password</label> <input name="pass" id="pass" type="password" class="input" data-type="password" placeholder="Enter your password"> </div>
+                                                <div class="group"> <input id="check" type="checkbox" class="check" checked> <label for="check"><span class="icon"></span> Keep me Signed in</label> </div>
+                                                <div class="group"> <input type="submit" class="button" name="login" value="Sign In"> </div>
+                                                <div class="hr"></div>
+                                                <div class="foot"> <a href="#">Forgot Password?</a> </div>
+                                            </div>
+                                        </form>
 
 
                                         <form class="form-register" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >

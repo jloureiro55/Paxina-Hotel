@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuracion>
-    <ip>127.0.0.1</ip>
-    <nombre>teis3_hotel</nombre>
-    <usuario>root</usuario>
-    <clave></clave>    
-</configuracion>
 
+    <server>
+        <dbname>teis3_hotel</dbname>
+        <ip>localhost</ip>
+    </server>
+    
+    <usuario>
+        <nombre>root</nombre>
+        <password></password>
+        <rol>conexion</rol>
+    </usuario>
+    
+    <usuario>
+        <nombre>estandar</nombre>
+        <password>1234</password>
+        <rol>estandar</rol>
+    </usuario>
+    
+    <usuario>
+        <nombre>admin</nombre>
+        <password>1234</password>
+        <rol>admin</rol>
+    </usuario>
+    
+</configuracion>

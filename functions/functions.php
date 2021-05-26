@@ -24,7 +24,7 @@ function encryptionPassword($password) {
 
 function validatePass($password, $hash) {
 
-    $encryptionPass = password_verify($contra, $hash);
+    $encryptionPass = password_verify($password, $hash);
 
     return $encryptionPass;
 }
@@ -36,6 +36,14 @@ function validateEmail($email) {
     } else {
         return false;
     }
+}
+
+function checkSession($result) {
+
+    session_start();
+    $_SESSION['usuario'] = $result['nombre'];
+    $_SESSION['rol'] = $result['rol_usuario'];
+    header("location:index.php");
 }
 ?>
 
