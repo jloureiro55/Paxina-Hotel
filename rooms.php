@@ -14,16 +14,22 @@
     </head>
 
     <?php
-    require_once 'database.php';
-    require_once 'functions/functions.php';
+    require_once(__DIR__ . '/autoload.php');
+
+    use \functions\functions as func;
+    use \conexion\conectDB as db;
+    
     session_start();
+    var_dump($_SESSION);
     if(isset($_POST['busqueda'])){
         $checkin = $_POST['checkin'];
         $checkout = $_POST['checkout'];
-        loadrooms($checkin,$checkout);
+        $db = new db($_SESSION['rol']);
+        $db->filtrarHabitaciones($checkin,$checkout);
+        
     }
     if(!isset($_POST['busqueda'])){
-        loadallrooms();
+        echo "non hay que sacar a fuco";
     }
     ?>
     <body>

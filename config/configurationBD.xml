@@ -13,14 +13,14 @@
     </usuario>
     
     <usuario>
-        <nombre>estandar</nombre>
-        <password>1234</password>
+        <nombre>root</nombre>
+        <password></password>
         <rol>estandar</rol>
     </usuario>
     
     <usuario>
-        <nombre>admin</nombre>
-        <password>1234</password>
+        <nombre>root</nombre>
+        <password></password>
         <rol>admin</rol>
     </usuario>
     

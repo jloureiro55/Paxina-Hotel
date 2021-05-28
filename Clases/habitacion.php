@@ -1,5 +1,7 @@
 <?php
 
+namespace Habitacion;
+
 class Habitacion{
     private $id;
     private $m2;

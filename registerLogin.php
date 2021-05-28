@@ -14,14 +14,16 @@
     </head>
 
     <?php
-    require_once 'ClassDB/conectDB.php';
-    //require_once 'database.php';
-    require_once 'functions/functions.php';
+    require_once(__DIR__ . '/autoload.php');
 
-    use \conectDB\ConectDB as db;
+    use \functions\functions as func;
+    use \conexion\conectDB as db;
 
-    $rol = 'conexion';
-    $db = new db($rol);
+$tool = new func();
+
+    $tool->checkSession();
+
+    $db = new db($_SESSION['rol']);
 
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['register'])) { // Comprobamos si se envio el formulario
         $name = $_POST['name'];
@@ -39,7 +41,7 @@
 
             if ($password == $repassword) {
 
-                if (validateEmail($email) == true) {
+                if ($tool->validateEmail($email) == true) {
 
                     // Llamada función
                     $db->registerUser($name, $phone, $pass, $email);
@@ -53,7 +55,17 @@
         $nameLogin = $_POST['user'];
         $passwordLogin = $_POST['pass'];
 
-        $db->loginUser($nameLogin, $passwordLogin);
+        $result = $db->loginUser($nameLogin, $passwordLogin);
+
+        if (is_array($result) && isset($result['password'])) {
+
+            $hash = $result['password'];
+
+            if (password_verify($passwordLogin, $hash)) {
+                $db->updateAcceso($result['id']);
+                $tool->saveSessionData($result);
+            }
+        }
     }
     ?>
     <body>

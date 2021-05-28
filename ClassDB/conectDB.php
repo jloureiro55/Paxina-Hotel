@@ -145,6 +145,60 @@ class ConectDB {
         
     }
 
+    
+    function filtrarHabitaciones($fecha_entrada, $fecha_salida, $tipo_de_habitacion = null) {
+
+        $habitaciones = array();
+
+        $sql = "select * 
+                 from habitaciones
+                    where id not in (
+                       select hr.id_habitacion
+                         from reservas as v, habitaciones_reservas as hr
+                           where v.num_reserva like hr.num_reserva
+                            and ? >= v.fecha_entrada
+                              and ? <= v.fecha_salida
+                                and ? >= v.fecha_entrada
+                        ) 
+                          and habitaciones.disponibilidad = 1";
+
+        if ($tipo_de_habitacion != null) {
+            $sql .= "and habitaciones.tipo_de_habitacion = ?;";
+        }
+
+        $db = $this->pdo;
+
+
+        if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
+            $stmt->bindValue(1, $fecha_entrada, \PDO::PARAM_STR);
+            $stmt->bindValue(2, $fecha_entrada, \PDO::PARAM_STR);
+            $stmt->bindValue(3, $fecha_salida, \PDO::PARAM_STR);
+
+            if ($tipo_de_habitacion != null) {
+                $stmt->bindValue(4, $tipo_de_habitacion, \PDO::PARAM_STR);
+            }
+            $stmt->execute(); // Ejecutamos la setencia preparada
+
+            while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
+
+                $imagenes = $this->buscarImagenesHabitacion($row['tipo_de_habitacion']);
+                $servicios = array();
+                $descripcion = $this->obtenerDescripcion($row['tipo_de_habitacion']);
+
+                $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
+                        $row['tipo_de_habitacion'], $descripcion, $row['servicio_limpieza'], $row['internet'],
+                        $row['precio'], $row['disponibilidad'], $servicios, $imagenes);
+
+                array_push($habitaciones, $habitacion);
+            }
+        } else {
+            echo "ERROR: " . print_r($db->errorInfo());
+        }
+
+        unset($stmt);
+
+        return $habitaciones;
+    }
 }
 
 ?>
