@@ -239,11 +239,10 @@ class conectDB {
         return $habitaciones;
     } 
     
-    function loadRoomData($tipo){
-        $datos = " ";
-        $sql = "select * from imagenes_habitaciones"
+    function loadRoomImg($tipo){
+        $datos;
+        $sql = "select * from imagenes_habitaciones "
                 . "where id_habitacion_tipo like $tipo";
-        
         $db= $this->pdo;
         
         if($stmt= $db->prepare($sql)){
@@ -251,7 +250,23 @@ class conectDB {
             
             if($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
                 $datos = $row;
-                var_dump($datos);
+            }
+            
+        }
+        return $datos;
+    }
+    
+    function loadRoomData($tipo){
+        $datos;
+        $sql = "select * from habitacion_tipo "
+                . "where id like $tipo";
+        $db= $this->pdo;
+        
+        if($stmt= $db->prepare($sql)){
+            $stmt->execute();
+            
+            if($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
+                $datos = $row;
             }
             
         }
