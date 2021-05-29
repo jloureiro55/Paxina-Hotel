@@ -23,5 +23,11 @@
         <password></password>
         <rol>admin</rol>
     </usuario>
+
+    <usuario>
+        <nombre>root</nombre>
+        <password></password>
+        <rol>visitante</rol>
+    </usuario>
     
 </configuracion>

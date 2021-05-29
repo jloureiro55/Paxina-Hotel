@@ -20,23 +20,40 @@
     use \conexion\conectDB as db;
     
     session_start();
-    var_dump($_SESSION);
     if(isset($_POST['busqueda'])){
         $checkin = $_POST['checkin'];
         $checkout = $_POST['checkout'];
         $db = new db($_SESSION['rol']);
-        $db->filtrarHabitaciones($checkin,$checkout);
+        $habitaciones = $db->filtrarHabitaciones($checkin,$checkout);
         
     }
     if(!isset($_POST['busqueda'])){
-        echo "non hay que sacar a fuco";
+        $db = new db($_SESSION['rol']);
+        $habitaciones = $db->CargarHabitaciones();
     }
     ?>
     <body>
         <div class="container-fluid"><!--Contenedor principal-->
             <?php require_once('header.php') ?>
             
-            
+            <?php 
+            if(isset($habitaciones) && sizeof($habitaciones) > 0){?>
+                <div class="container d-flex col-10 p-2">
+                <?php 
+                for($i = 0 ; $i < sizeof($habitaciones) ; $i++){
+                    require 'Carta.php';
+                }
+                ?>
+                </div>
+            <?php
+            }else{
+                ?>
+            <div class="container">
+            <p>Ninguna Habitación cumple los criterios.</p>
+            </div>
+            <?php
+            }
+            ?>
             
             </div>
 

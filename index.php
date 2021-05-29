@@ -10,12 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Charm&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="externo/bootstrap/css/bootstrap.min.css"></link>
     <link rel="stylesheet" href="estilos/style.css">
-    <title>Paxina de proba</title>
+    <title>Hotel Cache</title>
 </head>
 <body>
     <div class="container-fluid"><!--Contenedor principal-->
         <?php
-        session_start();
+        
+        require_once(__DIR__ . '/autoload.php');
+        
+        use \functions\functions as func;
+        $tools = new func();
+        
+        $tools->checkSession();
+        
+
         require_once('header.php');?>
         <div class="row">
             <section><!--Recuadro de sombra-->

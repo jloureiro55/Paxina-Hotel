@@ -2,6 +2,8 @@
 
 namespace conexion;
 
+use \habitacion\Habitacion as habitacion;
+
 class conectDB {
 
     private $nameBD;
@@ -53,22 +55,6 @@ class conectDB {
         return $array;
     }
 
-    function loadrooms() {
-
-        $bd = loadBBDD();
-
-        $sql = 'select id from habitaciones as r left join habitaciones_reservas as hr'
-                . 'on r.id = hr.id_habitacion where num_reserva = null';
-
-        $st = $bd->prepare($sql);
-
-        if ($st->execute()) {
-
-            $row = $st->fetch();
-
-            echo $row;
-        }
-    }
 
     // ROL tiene que ser el de usuario estandar 
     function registerUser($name, $phone, $pass, $email, $rol = 2) {
@@ -157,8 +143,85 @@ class conectDB {
         
     }
     
+    function filtrarHabitaciones($fecha_entrada, $fecha_salida, $tipo_de_habitacion = null) {
+
+        $habitaciones = array();
+
+        $sql = "select * 
+                 from habitaciones as h
+                    where h.id not in (
+                       select hr.id_habitacion
+                         from reservas as v inner join habitaciones_reservas as hr
+                         on v.num_reserva = hr.num_reserva
+                            and ? >= v.fecha_entrada
+                              and ? <= v.fecha_salida
+                                and ? >= v.fecha_entrada
+                        ) 
+                          and h.disponibilidad = 1";
+
+        if ($tipo_de_habitacion != null) {
+            $sql .= "and habitaciones.tipo_de_habitacion = ?;";
+        }
+
+        $db = $this->pdo;
+
+
+        if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
+            $stmt->bindValue(1, $fecha_entrada, \PDO::PARAM_STR);
+            $stmt->bindValue(2, $fecha_entrada, \PDO::PARAM_STR);
+            $stmt->bindValue(3, $fecha_salida, \PDO::PARAM_STR);
+
+            if ($tipo_de_habitacion != null) {
+                $stmt->bindValue(4, $tipo_de_habitacion, \PDO::PARAM_STR);
+            }
+            $stmt->execute(); // Ejecutamos la setencia preparada
+
+            while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
+
+                $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
+                        $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
+                        $row['precio'], $row['disponibilidad']);
+                array_push($habitaciones, $habitacion);
+            }
+        } else {
+            echo "ERROR: " . print_r($db->errorInfo());
+        }
+
+        unset($stmt);
+
+        return $habitaciones;
+    }
     
-    
+    function CargarHabitaciones() {
+
+        $habitaciones = array();
+
+        $sql = "select * 
+                 from habitaciones as h
+                          where h.disponibilidad = 1";
+
+        $db = $this->pdo;
+
+
+        if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
+
+            $stmt->execute(); // Ejecutamos la setencia preparada
+
+            while ($row = $stmt->fetch()) {
+
+                $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
+                        $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
+                        $row['precio'], $row['disponibilidad']);
+                array_push($habitaciones, $habitacion);
+            }
+        } else {
+            echo "ERROR: " . print_r($db->errorInfo());
+        }
+
+        unset($stmt);
+
+        return $habitaciones;
+    } 
 }
 
 ?>

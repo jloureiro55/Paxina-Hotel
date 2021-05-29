@@ -59,7 +59,7 @@ class functions {
 
 
             if (!isset($_SESSION['rol'])) { // Comprobamos si no existe un ROL asignado
-                $_SESSION['rol'] = 'estandar'; // Asignamos el rol por defecto
+                $_SESSION['rol'] = 'visitante'; // Asignamos el rol por defecto
             }
         }
     }
