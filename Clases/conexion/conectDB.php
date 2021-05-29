@@ -102,9 +102,12 @@ class conectDB {
 
         $result = $consult->fetch(\PDO::FETCH_ASSOC);
         
+        $this->saveLog($result['id']);
+        
         return $result;
         
     }
+    
 
     function updateAcceso($id){
         
@@ -142,6 +145,19 @@ class conectDB {
         }
         
     }
+    
+    function saveLog($user){
+        $sql = "insert into Log (user) values (?)";
+        
+        $db = $this->pdo;
+        
+        if($stmt = $db->prepare($sql)){
+            $stmt->bindValue(1, $user);
+            $stmt->execute();
+        }
+        
+    }
+    
     
     function filtrarHabitaciones($fecha_entrada, $fecha_salida, $tipo_de_habitacion = null) {
 
@@ -222,6 +238,25 @@ class conectDB {
 
         return $habitaciones;
     } 
+    
+    function loadRoomData($tipo){
+        $datos = " ";
+        $sql = "select * from imagenes_habitaciones"
+                . "where id_habitacion_tipo like $tipo";
+        
+        $db= $this->pdo;
+        
+        if($stmt= $db->prepare($sql)){
+            $stmt->execute();
+            
+            if($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
+                $datos = $row;
+                var_dump($datos);
+            }
+            
+        }
+        return $datos;
+    }
 }
 
 ?>

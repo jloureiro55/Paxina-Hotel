@@ -1,4 +1,5 @@
-
+<?php 
+var_dump($db->loadRoomData($habitaciones[$i]->tipo)); ?>
 <div class="card" style="width: 18rem;">
   <img class="card-img-top" src="..." alt="Card image cap">
   <div class="card-body">
