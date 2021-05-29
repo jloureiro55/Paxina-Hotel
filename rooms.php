@@ -24,12 +24,12 @@
         $checkin = $_POST['checkin'];
         $checkout = $_POST['checkout'];
         $db = new db($_SESSION['rol']);
-        $habitaciones = $db->filtrarHabitaciones($checkin,$checkout);
+        $habitaciones = $db->filterRoom($checkin,$checkout); //Llamamos a la funcion filterRoom para obtener las habitaciones que no están reservadas 
         
     }
     if(!isset($_POST['busqueda'])){
         $db = new db($_SESSION['rol']);
-        $habitaciones = $db->CargarHabitaciones();
+        $habitaciones = $db->loadRooms();
     }
     ?>
     <body>
@@ -40,8 +40,8 @@
             if(isset($habitaciones) && sizeof($habitaciones) > 0){?>
                 <div class="container d-flex col-10 p-2">
                 <?php 
-                for($i = 0 ; $i < sizeof($habitaciones) ; $i++){
-                    require 'Carta.php';
+                for($i = 0 ; $i < sizeof($habitaciones) ; $i++){ //Recorremos las habitaciones disponibles y usamos el fichero card.php para introducir los datos del bucle en ese fichero, que pintará las habitaciones en una tarjeta.
+                    require 'card.php';
                 }
                 ?>
                 </div>

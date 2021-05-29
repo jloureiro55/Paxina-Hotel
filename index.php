@@ -16,15 +16,17 @@
     <div class="container-fluid"><!--Contenedor principal-->
         <?php
         
-        require_once(__DIR__ . '/autoload.php');
+        require_once(__DIR__ . '/autoload.php'); //Recarga una vez desde el directirio el fichero autoload.php
         
         use \functions\functions as func;
-        $tools = new func();
         
-        $tools->checkSession();
+        $sesion = new func(); //Instancia un objeto de la clase functions
+        
+        $sesion->checkSession(); //Uso de la función checkSession de la clase functions (Comprueba si hay una sesión y asigna un rol en caso de existir una sesion activa)
         
 
-        require_once('header.php');?>
+        require_once('header.php');?> <!<!-- Recarga una vez el fichero header.php que contiene la cabezera de la pagina -->
+        
         <div class="row">
             <section><!--Recuadro de sombra-->
                 <div class="calendario">
@@ -86,7 +88,7 @@
               </section>
         </div>
        
-            <?php require_once('footer.php') ?>
+            <?php require_once('footer.php') ?> <!<!-- Recarga una vez el fichero footer.php que contiene el footer de la pagina -->
     </div>  
      
     <script src="externo/jquery/jquery-3.5.1.min.js"></script>

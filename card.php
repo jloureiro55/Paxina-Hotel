@@ -1,5 +1,9 @@
 <?php 
-$imagen = $db->loadRoomImg($habitaciones[$i]->tipo);
+/*Este fichero se usa en el fichero rooms.php.
+Aqui se crea una variable que contiene una instacia de pdo, donde se llama a dos funciones que filtraran de entre las habitaciones
+aquellas que esten dispobibles para el usuario. Y se muestran en pantalla en forma de tarjeta.
+ */
+$imagen = $db->loadTypeRoom($habitaciones[$i]->tipo);
 $datos = $db->loadRoomData($habitaciones[$i]->tipo);?>
 <div class="card" id="<?php echo $habitaciones[$i]->id; ?>" style="width: 18rem;">
   <img class="card-img-top" src="<?php echo $imagen['imagen_habitacion'];?>" alt="<?php echo $imagen['descripcion_imagen']; ?>">
@@ -9,7 +13,7 @@ $datos = $db->loadRoomData($habitaciones[$i]->tipo);?>
     <?php if($_SESSION['rol']== 'estandar'){ ?>
     <a href="#" class="btn btn-primary">Reservar</a>
     <?php }else{ ?>
-    <a href="registerLogin.php" class="btn btn-primary">Registrate/Inicia sesion</a>
+    <a href="registerLogin.php" class="btn btn-primary">Reservar</a>
     <?php } ?>
   </div>
 </div>

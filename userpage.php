@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+
 <html>
     <?php session_start(); ?>
     <head>
@@ -42,7 +38,6 @@ and open the template in the editor.
             </div>
             <div class="col-10 p-0 border border-primary d-flex d-flex-column">
                 <div class="col-12 border border-primary">
-                    
                 </div>
             </div>
         </div>

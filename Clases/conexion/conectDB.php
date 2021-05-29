@@ -2,7 +2,12 @@
 
 namespace conexion;
 
-use \habitacion\Habitacion as habitacion;
+use \habitacion\Habitacion as habitacion; //Uso de la clase habitacion
+
+/*
+ * Clase que contiene la función para realizar una conexion a la base de datos
+ * y funciones que hacen uso de esta funcion para conectarse a ella.
+ */
 
 class conectDB {
 
@@ -11,12 +16,18 @@ class conectDB {
     private $password;
     private $server;
     private $pdo;
-    private $fileXML = __DIR__ . '/../../config/configurationBD.xml';
-    private $fileXSD = __DIR__ . '/../../config/configurationBD.xsd';
+    private $fileXML = __DIR__ . '/../../config/configurationBD.xml'; //Propiedad que obtiene la ruta del fichero de configuracion xml
+    private $fileXSD = __DIR__ . '/../../config/configurationBD.xsd'; //Propiedad que obtiene la ruta del fichero de configuracion xsd
 
+    /**
+     * Función constructor que recibe un rol de un usuario y devuelve una conexion en caso de que
+     * la lectura de los ficheros de configuración sea correcta, para ello se utiliza la funcion read_config 
+     * que recibe los ficheros xml y xsd.
+     * @param type $rol
+     */
     function __construct($rol) {
-        
-        $data = $this->leer_config($this->fileXML, $this->fileXSD, $rol);
+
+        $data = $this->read_config($this->fileXML, $this->fileXSD, $rol);
 
         $this->nameBD = $data[0];
         $this->server = $data[1];
@@ -25,6 +36,11 @@ class conectDB {
         $this->pdo = $this->connect();
     }
 
+    /**
+     * Función que devuelve la conexion a la base de datos.
+     * Para ello se instacia un objeto PDO que recibirá los parametros que se obtienen en el constructor
+     * @return Devuelve \PDO 
+     */
     protected function connect() {
         try {
             $pdo = new \PDO("mysql:host=" . $this->server . ";dbname=" . $this->nameBD . ";charset=utf8", $this->user, $this->password);
@@ -34,18 +50,27 @@ class conectDB {
         }
     }
 
-    function leer_config($fileXml, $fileXsd, $rol) {
+    /**
+     * Función que lee la configuración de los ficheros xml y xsd que recibe como parametros, y el rol.
+     * Devuelve un array con los datos del fichero xml que se utilizarán para establecer la conexion.
+     * @param type $fileXml un fichero xml
+     * @param type $fileXsd un fichero xsd
+     * @param type $rol String
+     * @return un array
+     * @throws \PDOException
+     */
+    function read_config($fileXml, $fileXsd, $rol) {
 
-        $conf = new \DOMDocument();
-        $conf->load($fileXml);
+        $conf = new \DOMDocument(); //Instancia un objeto DOMDocument para poder interpretar los ficheros xml
+        $conf->load($fileXml); //Carga el documento xml
 
-        if (!$conf->schemaValidate($fileXsd)) {
+        if (!$conf->schemaValidate($fileXsd)) { //Comprueba si el fichero xsd es válido
             throw new \PDOException("Ficheiro de usuarios no valido");
         }
 
 
-        $xml = simplexml_load_file($fileXml);
-
+        $xml = simplexml_load_file($fileXml); //Interpreta el fichero xml
+        //array que obtiene los datos del fichero xml usando rutas xpath para obtener los datos
         $array = [
             "" . $xml->xpath('//dbname')[0],
             "" . $xml->xpath('//ip')[0],
@@ -55,8 +80,15 @@ class conectDB {
         return $array;
     }
 
-
-    // ROL tiene que ser el de usuario estandar 
+    /**
+     * Funcion que recibe los datos de un usuario que ha de registrarse en la pagina web y
+     * que se almacenaran en la base de datos.
+     * @param type $name String
+     * @param type $phone String
+     * @param type $pass String
+     * @param type $email String
+     * @param type $rol String
+     */
     function registerUser($name, $phone, $pass, $email, $rol = 2) {
 
 
@@ -78,7 +110,6 @@ class conectDB {
         }
     }
 
-    
     /**
      * Función que obtiene los datos del usuario
      * 
@@ -93,7 +124,7 @@ class conectDB {
                 . " where nombre = :nameUser";
 
         $db = $this->pdo;
-        
+
         $consult = $db->prepare($sql);
 
         $consult->bindParam(':nameUser', $nameLogin);
@@ -101,65 +132,87 @@ class conectDB {
         $consult->execute();
 
         $result = $consult->fetch(\PDO::FETCH_ASSOC);
-        
-        $this->saveLog($result['id']);
-        
-        return $result;
-        
-    }
-    
 
-    function updateAcceso($id){
-        
+        $this->saveLog($result['id']);
+
+        return $result;
+    }
+
+    /**
+     * Función que sirve para actualizar el inicio de sesión en la base de datos.
+     * Recibe como parametro el id del usuario.
+     * @param type $id
+     */
+    function updateAcceso($id) {
+
         $sql = "update usuarios set acceso_log = now() where id = ?;";
-        
+
         $db = $this->pdo;
-        
+
         $db->prepare($sql);
-        
-         if (($smtp = $db->prepare($sql))) {
+
+        if (($smtp = $db->prepare($sql))) {
 
             $smtp->bindValue(1, $id, \PDO::PARAM_INT);
-     
+
             $smtp->execute();
         }
-        
     }
-    
-    function updateUserData($id, $nombre, $email, $telf){
-        
+
+    /**
+     * Función que sirve para actualizar los datos del usuario en la base de datos.
+     * Recibe como parametro los nuevos valores.
+     * @param type $id
+     * @param type $nombre String
+     * @param type $email String
+     * @param type $telf String
+     */
+    function updateUserData($id, $nombre, $email, $telf) {
+
         $sql = "UPDATE usuarios set nombre= ?, email=?, telf =?, direccion = ?, modificacion_log = now() where id = ?;";
-        
+
         $db = $this->pdo;
-        
+
         $db->prepare($sql);
-        
-         if (($smtp = $db->prepare($sql))) {
+
+        if (($smtp = $db->prepare($sql))) {
 
             $smtp->bindValue(1, $nombre, \PDO::PARAM_STR);
             $smtp->bindValue(2, $email, \PDO::PARAM_STR);
             $smtp->bindValue(3, $telf, \PDO::PARAM_STR);
             $smtp->bindValue(1, $direccion, \PDO::PARAM_STR);
-     
+
             $smtp->execute();
         }
-        
     }
-    
-    function saveLog($user){
+
+    /**
+     * Función que guarda el login en la base de datos.
+     * @param type $user
+     */
+    function saveLog($user) {
         $sql = "insert into Log (user) values (?)";
-        
+
         $db = $this->pdo;
-        
-        if($stmt = $db->prepare($sql)){
+
+        if ($stmt = $db->prepare($sql)) {
             $stmt->bindValue(1, $user);
             $stmt->execute();
         }
-        
     }
-    
-    
-    function filtrarHabitaciones($fecha_entrada, $fecha_salida, $tipo_de_habitacion = null) {
+
+    /**
+     * Función para filtrar habitaciones cuando un usuario busca una fecha de entrada y de salida y 
+     * hace la consulta para ver la disponibilidad de habitaciones dadas las fechas introducidas.
+     * Recibe como parametros las fechas y un tipo de habitación, que se inicializa a null para buscar
+     * solo las habitaciones que no tienen reserva.  
+     * Devuelve un array con las habitaciones disponibles y sus datos.
+     * @param type $fecha_entrada 
+     * @param type $fecha_salida
+     * @param type $tipo_de_habitacion
+     * @return array
+     */
+    function filterRoom($fecha_entrada, $fecha_salida, $tipo_de_habitacion = null) {
 
         $habitaciones = array();
 
@@ -194,6 +247,9 @@ class conectDB {
 
             while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
 
+                //Instancia de un objeto habitacion que recibe por parametros los datos de una habitacion, obtenidos de la base de datos.
+                //Una vez creado el objeto con sus valores, se guarda en el array habitaciones. Este array obtendrá
+                //todas las habitaciones disponibles con sus datos correspondientes.
                 $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
                         $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
                         $row['precio'], $row['disponibilidad']);
@@ -207,8 +263,12 @@ class conectDB {
 
         return $habitaciones;
     }
-    
-    function CargarHabitaciones() {
+
+    /**
+     * Función que carga en un array las habitaciones están ocupadas, junto con sus datos.  
+     * @return array $habitaciones
+     */
+    function loadRooms() {
 
         $habitaciones = array();
 
@@ -220,7 +280,6 @@ class conectDB {
 
 
         if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
-
             $stmt->execute(); // Ejecutamos la setencia preparada
 
             while ($row = $stmt->fetch()) {
@@ -237,41 +296,54 @@ class conectDB {
         unset($stmt);
 
         return $habitaciones;
-    } 
-    
-    function loadRoomImg($tipo){
+    }
+
+    /**
+     * Función que recibe como parametro el tipo de habitación, y si el tipo
+     * coincide con el id de la iamgen de la habitación, devuelve
+     * los datos de la imagen de la habitación.
+     * @param type $tipo 
+     * @return type
+     */
+    function loadTypeRoom($tipo) {
         $datos;
         $sql = "select * from imagenes_habitaciones "
                 . "where id_habitacion_tipo like $tipo";
-        $db= $this->pdo;
-        
-        if($stmt= $db->prepare($sql)){
+        $db = $this->pdo;
+
+        if ($stmt = $db->prepare($sql)) {
             $stmt->execute();
-            
-            if($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
+
+            if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $datos = $row;
             }
-            
         }
         return $datos;
     }
-    
-    function loadRoomData($tipo){
+
+    /**
+     * Función que devuelve los datos del tipo de habitación.
+     * Recibe la posición que está dentro de un array de habitaciones, donde
+     * se le indicará el tipo.
+     * @param type $tipo
+     * @return type Array $datos
+     */
+    function loadRoomData($tipo) {
         $datos;
         $sql = "select * from habitacion_tipo "
                 . "where id like $tipo";
-        $db= $this->pdo;
-        
-        if($stmt= $db->prepare($sql)){
+        $db = $this->pdo;
+
+        if ($stmt = $db->prepare($sql)) {
             $stmt->execute();
-            
-            if($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
+
+            if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $datos = $row;
             }
-            
         }
         return $datos;
     }
+
 }
 
 ?>
