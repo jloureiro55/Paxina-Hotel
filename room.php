@@ -26,21 +26,35 @@
     
     if(isset($_GET)){
         $db = new db($_SESSION['rol']);
-        $datos_habitacion = $db->loadRoomData(key($_GET));
-        $info = $db->loadFullData(key($_GET));
-        $img = $db->loadTypeRoom(key($_GET));
+        $id = key($_GET);
+        $info = $db->loadFullData($id);
+        $datos_habitacion = $db->loadRoomData($info['tipo_de_habitacion']);
+        
+        $img = $db->loadTypeRoom($info['tipo_de_habitacion']);
         $services = $db->loadServices();
         
         $checkin = $_COOKIE['checkin'];
         $checkout = $_COOKIE['checkout'];
         $dias = $sesion->dateDiff($checkin, $checkout);
-        echo "usuario".$_SESSION['UserId']." fecha entrada: ".$checkin." fecha salida: ".$checkout." id habitacion: ". key($_GET);
     }
     
     if(isset($_POST['enviar'])){
-        echo "<br>";
-        var_dump($_POST);
+        try{
+        if(isset($_POST['servicio'])){
+            $db->reserve($_SESSION['UserId'], $checkin, $checkout, $id, $dias,$_POST['servicio']);
+            echo "<script type='text/javascript'>alert(Reserva Realizada);</script>";
+        }else{
+            $db->reserve($_SESSION['UserId'], $checkin, $checkout, $id, $dias);
+            echo "<script type='text/javascript'>alert(Reserva Realizada);</script>";
+        }
+        }catch(Exception $e){
+            echo "<script type='text/javascript'>alert(".$e->getMessage().");</script>";
+        }finally{
+            unset($_POST);
+        }
     }
+    
+    
     ?>
     <body>
         <div class="container-fluid"><!--Contenedor principal-->

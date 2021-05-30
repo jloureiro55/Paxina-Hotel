@@ -356,7 +356,7 @@ class conectDB {
         }
     }
     
-    function reserve($id_usuario, $fecha_entrada, $fecha_salida, $id_habitacion,$dias) {
+    function reserve($id_usuario, $fecha_entrada, $fecha_salida, $id_habitacion,$dias,$servicios=null) {
 
         $db = $this->pdo;
 
@@ -403,8 +403,22 @@ class conectDB {
                     $st->execute();
 
                 }
+                
+                if($servicios != null){
+                    for($i=0; $i < sizeof($servicios); $i++){
+                        $addservice = "insert into habitacion_servicio (id_habitacion,id_servicio,fecha_servicio,fecha_fin_servicio) values (?,?,?,?)";
+                        if($s = $db->prepare($addservice)){
+                            $s->bindValue(1, $id_habitacion, \PDO::PARAM_STR);
+                            $s->bindValue(2, $servicios[$i], \PDO::PARAM_STR);
+                            $s->bindValue(3, $fecha_entrada, \PDO::PARAM_STR);
+                            $s->bindValue(4, $fecha_salida, \PDO::PARAM_STR);
+                            $s->execute();
+                        }
+                    }
+                }
             }
         }
+        
     }
     
     function loadServices(){

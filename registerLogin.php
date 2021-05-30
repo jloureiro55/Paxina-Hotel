@@ -19,7 +19,7 @@
     use \functions\functions as func;
     use \conexion\conectDB as db;
 
-$tool = new func();
+    $tool = new func();
 
     $tool->checkSession();
 
@@ -34,10 +34,10 @@ $tool = new func();
 
 
 
-        $pass = encryptionPassword($password);
+        $pass = $tool->encryptionPassword($password);
 
 
-        if (phone($phone) == true && !empty($phone)) {
+        if ($tool->phone($phone) == true && !empty($phone)) {
 
             if ($password == $repassword) {
 
