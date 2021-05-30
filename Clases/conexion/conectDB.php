@@ -46,7 +46,7 @@ class conectDB {
             $pdo = new \PDO("mysql:host=" . $this->server . ";dbname=" . $this->nameBD . ";charset=utf8", $this->user, $this->password);
             return $pdo;
         } catch (Exception $ex) {
-            
+            echo $ex->getMessage();
         }
     }
 
@@ -91,22 +91,25 @@ class conectDB {
      */
     function registerUser($name, $phone, $pass, $email, $rol = 2) {
 
+        try {
+            $sql = "insert into usuarios (nombre,telf,password,email,rol_usuario) values(?,?,?,?,?)";
 
-        $sql = "insert into usuarios (nombre,telf,password,email,rol_usuario) values(?,?,?,?,?)";
+            $db = $this->pdo;
 
-        $db = $this->pdo;
+            if (($smtp = $db->prepare($sql))) {
 
-        if (($smtp = $db->prepare($sql))) {
-
-            $smtp->bindValue(1, $name, \PDO::PARAM_STR);
-            $smtp->bindValue(2, $phone, \PDO::PARAM_INT);
-            $smtp->bindValue(3, $pass, \PDO::PARAM_STR);
-            $smtp->bindValue(4, $email, \PDO::PARAM_STR);
-            $smtp->bindValue(5, $rol, \PDO::PARAM_STR);
+                $smtp->bindValue(1, $name, \PDO::PARAM_STR);
+                $smtp->bindValue(2, $phone, \PDO::PARAM_INT);
+                $smtp->bindValue(3, $pass, \PDO::PARAM_STR);
+                $smtp->bindValue(4, $email, \PDO::PARAM_STR);
+                $smtp->bindValue(5, $rol, \PDO::PARAM_STR);
 
 
 
-            $smtp->execute();
+                $smtp->execute();
+            }
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
     }
 
@@ -117,25 +120,28 @@ class conectDB {
      * @return array con los datos
      */
     function loginUser($nameLogin) {
+        try {
+            $sql = "select usuarios.id as id, nombre, password, rol_usuario, nombre_rol "
+                    . "from usuarios "
+                    . "inner join roles on usuarios.rol_usuario = roles.id"
+                    . " where nombre = :nameUser";
 
-        $sql = "select usuarios.id as id, nombre, password, rol_usuario, nombre_rol "
-                . "from usuarios "
-                . "inner join roles on usuarios.rol_usuario = roles.id"
-                . " where nombre = :nameUser";
+            $db = $this->pdo;
 
-        $db = $this->pdo;
+            $consult = $db->prepare($sql);
 
-        $consult = $db->prepare($sql);
+            $consult->bindParam(':nameUser', $nameLogin);
 
-        $consult->bindParam(':nameUser', $nameLogin);
+            $consult->execute();
 
-        $consult->execute();
+            $result = $consult->fetch(\PDO::FETCH_ASSOC);
 
-        $result = $consult->fetch(\PDO::FETCH_ASSOC);
+            $this->saveLog($result['id']);
 
-        $this->saveLog($result['id']);
-
-        return $result;
+            return $result;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+        }
     }
 
     /**
@@ -144,18 +150,21 @@ class conectDB {
      * @param type $id
      */
     function updateAcceso($id) {
+        try {
+            $sql = "update usuarios set acceso_log = now() where id = ?;";
 
-        $sql = "update usuarios set acceso_log = now() where id = ?;";
+            $db = $this->pdo;
 
-        $db = $this->pdo;
+            $db->prepare($sql);
 
-        $db->prepare($sql);
+            if (($smtp = $db->prepare($sql))) {
 
-        if (($smtp = $db->prepare($sql))) {
+                $smtp->bindValue(1, $id, \PDO::PARAM_INT);
 
-            $smtp->bindValue(1, $id, \PDO::PARAM_INT);
-
-            $smtp->execute();
+                $smtp->execute();
+            }
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
     }
 
@@ -168,21 +177,24 @@ class conectDB {
      * @param type $telf String
      */
     function updateUserData($id, $nombre, $email, $telf) {
+        try {
+            $sql = "UPDATE usuarios set nombre= ?, email=?, telf =?, direccion = ?, modificacion_log = now() where id = ?;";
 
-        $sql = "UPDATE usuarios set nombre= ?, email=?, telf =?, direccion = ?, modificacion_log = now() where id = ?;";
+            $db = $this->pdo;
 
-        $db = $this->pdo;
+            $db->prepare($sql);
 
-        $db->prepare($sql);
+            if (($smtp = $db->prepare($sql))) {
 
-        if (($smtp = $db->prepare($sql))) {
+                $smtp->bindValue(1, $nombre, \PDO::PARAM_STR);
+                $smtp->bindValue(2, $email, \PDO::PARAM_STR);
+                $smtp->bindValue(3, $telf, \PDO::PARAM_STR);
+                $smtp->bindValue(1, $direccion, \PDO::PARAM_STR);
 
-            $smtp->bindValue(1, $nombre, \PDO::PARAM_STR);
-            $smtp->bindValue(2, $email, \PDO::PARAM_STR);
-            $smtp->bindValue(3, $telf, \PDO::PARAM_STR);
-            $smtp->bindValue(1, $direccion, \PDO::PARAM_STR);
-
-            $smtp->execute();
+                $smtp->execute();
+            }
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
     }
 
@@ -191,13 +203,17 @@ class conectDB {
      * @param type $user
      */
     function saveLog($user) {
-        $sql = "insert into Log (user) values (?)";
+        try {
+            $sql = "insert into Log (user) values (?)";
 
-        $db = $this->pdo;
+            $db = $this->pdo;
 
-        if ($stmt = $db->prepare($sql)) {
-            $stmt->bindValue(1, $user);
-            $stmt->execute();
+            if ($stmt = $db->prepare($sql)) {
+                $stmt->bindValue(1, $user);
+                $stmt->execute();
+            }
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
     }
 
@@ -213,10 +229,10 @@ class conectDB {
      * @return array
      */
     function filterRoom($fecha_entrada, $fecha_salida, $tipo_de_habitacion = null) {
+        try {
+            $habitaciones = array();
 
-        $habitaciones = array();
-
-        $sql = "select * 
+            $sql = "select * 
                  from habitaciones as h
                     where h.id not in (
                        select hr.id_habitacion
@@ -228,40 +244,43 @@ class conectDB {
                         ) 
                           and h.disponibilidad = 1";
 
-        if ($tipo_de_habitacion != null) {
-            $sql .= "and habitaciones.tipo_de_habitacion = ?;";
-        }
-
-        $db = $this->pdo;
-
-
-        if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
-            $stmt->bindValue(1, $fecha_entrada, \PDO::PARAM_STR);
-            $stmt->bindValue(2, $fecha_entrada, \PDO::PARAM_STR);
-            $stmt->bindValue(3, $fecha_salida, \PDO::PARAM_STR);
-
             if ($tipo_de_habitacion != null) {
-                $stmt->bindValue(4, $tipo_de_habitacion, \PDO::PARAM_STR);
+                $sql .= "and habitaciones.tipo_de_habitacion = ?;";
             }
-            $stmt->execute(); // Ejecutamos la setencia preparada
 
-            while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
+            $db = $this->pdo;
 
-                //Instancia de un objeto habitacion que recibe por parametros los datos de una habitacion, obtenidos de la base de datos.
-                //Una vez creado el objeto con sus valores, se guarda en el array habitaciones. Este array obtendrá
-                //todas las habitaciones disponibles con sus datos correspondientes.
-                $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
-                        $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
-                        $row['precio'], $row['disponibilidad']);
-                array_push($habitaciones, $habitacion);
+
+            if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
+                $stmt->bindValue(1, $fecha_entrada, \PDO::PARAM_STR);
+                $stmt->bindValue(2, $fecha_entrada, \PDO::PARAM_STR);
+                $stmt->bindValue(3, $fecha_salida, \PDO::PARAM_STR);
+
+                if ($tipo_de_habitacion != null) {
+                    $stmt->bindValue(4, $tipo_de_habitacion, \PDO::PARAM_STR);
+                }
+                $stmt->execute(); // Ejecutamos la setencia preparada
+
+                while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
+
+                    //Instancia de un objeto habitacion que recibe por parametros los datos de una habitacion, obtenidos de la base de datos.
+                    //Una vez creado el objeto con sus valores, se guarda en el array habitaciones. Este array obtendrá
+                    //todas las habitaciones disponibles con sus datos correspondientes.
+                    $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
+                            $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
+                            $row['precio'], $row['disponibilidad']);
+                    array_push($habitaciones, $habitacion);
+                }
+            } else {
+                echo "ERROR: " . print_r($db->errorInfo());
             }
-        } else {
-            echo "ERROR: " . print_r($db->errorInfo());
+
+            unset($stmt);
+
+            return $habitaciones;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
-
-        unset($stmt);
-
-        return $habitaciones;
     }
 
     /**
@@ -269,33 +288,36 @@ class conectDB {
      * @return array $habitaciones
      */
     function loadRooms() {
+        try {
+            $habitaciones = array();
 
-        $habitaciones = array();
-
-        $sql = "select * 
+            $sql = "select * 
                  from habitaciones as h
                           where h.disponibilidad = 1";
 
-        $db = $this->pdo;
+            $db = $this->pdo;
 
 
-        if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
-            $stmt->execute(); // Ejecutamos la setencia preparada
+            if (($stmt = $db->prepare($sql))) { // Creamos y validamos la sentencia preparada
+                $stmt->execute(); // Ejecutamos la setencia preparada
 
-            while ($row = $stmt->fetch()) {
+                while ($row = $stmt->fetch()) {
 
-                $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
-                        $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
-                        $row['precio'], $row['disponibilidad']);
-                array_push($habitaciones, $habitacion);
+                    $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
+                            $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
+                            $row['precio'], $row['disponibilidad']);
+                    array_push($habitaciones, $habitacion);
+                }
+            } else {
+                echo "ERROR: " . print_r($db->errorInfo());
             }
-        } else {
-            echo "ERROR: " . print_r($db->errorInfo());
+
+            unset($stmt);
+
+            return $habitaciones;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
-
-        unset($stmt);
-
-        return $habitaciones;
     }
 
     /**
@@ -306,19 +328,23 @@ class conectDB {
      * @return type
      */
     function loadTypeRoom($tipo) {
-        $datos;
-        $sql = "select * from imagenes_habitaciones "
-                . "where id_habitacion_tipo like $tipo";
-        $db = $this->pdo;
+        try {
+            $datos;
+            $sql = "select * from imagenes_habitaciones "
+                    . "where id_habitacion_tipo like $tipo";
+            $db = $this->pdo;
 
-        if ($stmt = $db->prepare($sql)) {
-            $stmt->execute();
+            if ($stmt = $db->prepare($sql)) {
+                $stmt->execute();
 
-            if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $datos = $row;
+                if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $datos = $row;
+                }
             }
+            return $datos;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
-        return $datos;
     }
 
     /**
@@ -329,113 +355,129 @@ class conectDB {
      * @return type Array $datos
      */
     function loadRoomData($tipo) {
-        $datos;
-        $sql = "select * from habitacion_tipo "
-                . "where id like $tipo";
-        $db = $this->pdo;
+        try {
+            $datos;
+            $sql = "select * from habitacion_tipo "
+                    . "where id like $tipo";
+            $db = $this->pdo;
 
-        if ($stmt = $db->prepare($sql)) {
-            $stmt->execute();
+            if ($stmt = $db->prepare($sql)) {
+                $stmt->execute();
 
-            if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $datos = $row;
+                if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $datos = $row;
+                }
             }
-        }
-        return $datos;
-    }
-    function loadFullData($id){
-        $sql = "select * from habitaciones where id = $id";
-        
-        $db= $this->pdo;
-        
-        if($stmt = $db->prepare($sql)){
-            $stmt->execute();
-            if($row = $stmt->fetch()){
-                return $row;
-            }
+            return $datos;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
     }
-    
-    function reserve($id_usuario, $fecha_entrada, $fecha_salida, $id_habitacion,$dias,$servicios=null) {
 
-        $db = $this->pdo;
+    function loadFullData($id) {
+        try {
+            $sql = "select * from habitaciones where id = $id";
 
-        $sql = 'insert into reservas (id_usuario,num_dias,fecha_entrada, fecha_salida) values(?,?,?,?)';
+            $db = $this->pdo;
 
-        $habitaciones_reservas = 'insert into habitaciones_reservas (num_reserva,id_habitacion) value(?,?)';
+            if ($stmt = $db->prepare($sql)) {
+                $stmt->execute();
+                if ($row = $stmt->fetch()) {
+                    return $row;
+                }
+            }
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
+
+    function reserve($id_usuario, $fecha_entrada, $fecha_salida, $id_habitacion, $dias, $servicios = null) {
+        try {
+
+            $db = $this->pdo;
+
+            $sql = 'insert into reservas (id_usuario,num_dias,fecha_entrada, fecha_salida) values(?,?,?,?)';
+
+            $habitaciones_reservas = 'insert into habitaciones_reservas (num_reserva,id_habitacion) value(?,?)';
 
 
 
-        if (($smtp = $db->prepare($sql))) {
+            if (($smtp = $db->prepare($sql))) {
 
-            $smtp->bindValue(1, $id_usuario, \PDO::PARAM_STR);
-            $smtp->bindValue(2, $dias, \PDO::PARAM_STR);
-            $smtp->bindValue(3, $fecha_entrada, \PDO::PARAM_STR);
-            $smtp->bindValue(4, $fecha_salida, \PDO::PARAM_STR);
+                $smtp->bindValue(1, $id_usuario, \PDO::PARAM_STR);
+                $smtp->bindValue(2, $dias, \PDO::PARAM_STR);
+                $smtp->bindValue(3, $fecha_entrada, \PDO::PARAM_STR);
+                $smtp->bindValue(4, $fecha_salida, \PDO::PARAM_STR);
 
-            if ($smtp->execute()) {
+                if ($smtp->execute()) {
 
-                $numReserva = 'select MAX(num_reserva) as ultima_reserva from reservas';
+                    $numReserva = 'select MAX(num_reserva) as ultima_reserva from reservas';
 
-                if ($sm = $db->prepare($numReserva)) {
-                    $sm->execute();
+                    if ($sm = $db->prepare($numReserva)) {
+                        $sm->execute();
 
-                    if ($row = $sm->fetch(\PDO::FETCH_ASSOC)) {
-                        $numeroReserva = $row['ultima_reserva'];
+                        if ($row = $sm->fetch(\PDO::FETCH_ASSOC)) {
+                            $numeroReserva = $row['ultima_reserva'];
+                        }
+
+                        $numHabitacion = "select id from habitaciones where id like $id_habitacion";
+
+                        if ($stp = $db->prepare($numHabitacion)) {
+                            $stp->execute();
+
+                            if ($r = $stp->fetch(\PDO::FETCH_ASSOC)) {
+                                $id_habit = $r['id'];
+                            }
+                        }
                     }
 
-                    $numHabitacion = "select id from habitaciones where id like $id_habitacion";
+                    if ($st = $db->prepare($habitaciones_reservas)) {
 
-                    if ($stp = $db->prepare($numHabitacion)) {
-                        $stp->execute();
+                        $st->bindValue(1, $numeroReserva, \PDO::PARAM_STR);
+                        $st->bindValue(2, $id_habit, \PDO::PARAM_STR);
 
-                        if ($r = $stp->fetch(\PDO::FETCH_ASSOC)) {
-                            $id_habit = $r['id'];
+                        $st->execute();
+                    }
+
+                    if ($servicios != null) {
+                        for ($i = 0; $i < sizeof($servicios); $i++) {
+                            $addservice = "insert into habitacion_servicio (id_habitacion,id_servicio,fecha_servicio,fecha_fin_servicio) values (?,?,?,?)";
+                            if ($s = $db->prepare($addservice)) {
+                                $s->bindValue(1, $id_habitacion, \PDO::PARAM_STR);
+                                $s->bindValue(2, $servicios[$i], \PDO::PARAM_STR);
+                                $s->bindValue(3, $fecha_entrada, \PDO::PARAM_STR);
+                                $s->bindValue(4, $fecha_salida, \PDO::PARAM_STR);
+                                $s->execute();
+                            }
                         }
                     }
                 }
+            }
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
 
-                if ($st = $db->prepare($habitaciones_reservas)) {
+    function loadServices() {
+        try {
+            $db = $this->pdo;
+            $servicios = [];
 
-                    $st->bindValue(1, $numeroReserva, \PDO::PARAM_STR);
-                    $st->bindValue(2, $id_habit, \PDO::PARAM_STR);
+            $sql = 'select * from servicios';
 
-                    $st->execute();
+            if ($stmt = $db->prepare($sql)) {
 
-                }
-                
-                if($servicios != null){
-                    for($i=0; $i < sizeof($servicios); $i++){
-                        $addservice = "insert into habitacion_servicio (id_habitacion,id_servicio,fecha_servicio,fecha_fin_servicio) values (?,?,?,?)";
-                        if($s = $db->prepare($addservice)){
-                            $s->bindValue(1, $id_habitacion, \PDO::PARAM_STR);
-                            $s->bindValue(2, $servicios[$i], \PDO::PARAM_STR);
-                            $s->bindValue(3, $fecha_entrada, \PDO::PARAM_STR);
-                            $s->bindValue(4, $fecha_salida, \PDO::PARAM_STR);
-                            $s->execute();
-                        }
-                    }
+                $stmt->execute();
+                while ($row = $stmt->fetch()) {
+                    array_push($servicios, $row);
                 }
             }
+            return $servicios;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
         }
-        
     }
-    
-    function loadServices(){
-        $db= $this->pdo;
-        $servicios=[];
-        
-        $sql = 'select * from servicios';
-        
-        if ($stmt = $db->prepare($sql)){
-            
-            $stmt->execute();
-            while($row = $stmt->fetch()){
-                array_push($servicios,$row);
-            }
-        }
-        return $servicios;
-    }
+
 }
 
 ?>
