@@ -13,9 +13,6 @@
                         <a class="nav-link active" href="index.php">Home</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="#">Reserve</a>
-                      </li>
-                      <li class="nav-item">
                           <a class="nav-link" href="#">Services</a>
                         </li>
                         <li class="nav-item">
