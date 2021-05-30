@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-05-2021 a las 16:41:02
+-- Tiempo de generación: 30-05-2021 a las 23:56:53
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.10
 
@@ -133,7 +133,16 @@ CREATE TABLE `log` (
 --
 
 INSERT INTO `log` (`user`, `fecha`) VALUES
-(2, '2021-05-29 10:07:00');
+(2, '2021-05-29 10:07:00'),
+(2, '2021-05-29 18:58:07'),
+(2, '2021-05-29 18:58:24'),
+(2, '2021-05-29 19:03:21'),
+(2, '2021-05-30 07:42:30'),
+(2, '2021-05-30 10:44:06'),
+(2, '2021-05-30 16:17:33'),
+(2, '2021-05-30 21:42:08'),
+(2, '2021-05-30 21:48:13'),
+(4, '2021-05-30 21:52:46');
 
 -- --------------------------------------------------------
 
@@ -191,6 +200,14 @@ CREATE TABLE `servicios` (
   `disponibilidad` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `servicios`
+--
+
+INSERT INTO `servicios` (`id`, `nombre_servicio`, `precio_servicio`, `descripcion`, `disponibilidad`) VALUES
+(1, 'Desayuno', '10.00', 'Desayuno en la cafetería del hotel con buffet.', b'1'),
+(2, 'Desayuno en habitacion', '15.00', 'Desayuno entregado en habitacion.', b'1');
+
 -- --------------------------------------------------------
 
 --
@@ -213,7 +230,8 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre`, `email`, `telf`, `direccion`, `password`, `rol_usuario`) VALUES
 (2, 'maruxa', 'javierloureiro2a@gmail.com', '664682983', '', '$2y$10$OZzozR0FtFtlCND1PV3RdOv1MMymv.yaSCF..kXeHPg9yixb00mGm', 2),
-(4, 'Suso', 'casadesuso666@gmail.com', '662492933', '', '$2y$10$dl/PR0JXoIGuVwwQgNV2C.EXGps6HQr7Et9IP99FEPugNmptAk3ei', 2);
+(4, 'Suso', 'casadesuso666@gmail.com', '662492933', '', '$2y$10$dl/PR0JXoIGuVwwQgNV2C.EXGps6HQr7Et9IP99FEPugNmptAk3ei', 2),
+(5, 'susillo', 'susoloko5@gmail.com', '664567899', '', '$2y$10$4gQIde052qOQYXiHcffxCOS0n08Z012F9sBMinAuvSme7n.mggNPC', 2);
 
 --
 -- Índices para tablas volcadas
@@ -305,7 +323,7 @@ ALTER TABLE `habitaciones`
 -- AUTO_INCREMENT de la tabla `habitaciones_reservas`
 --
 ALTER TABLE `habitaciones_reservas`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion_tipo`
@@ -323,19 +341,19 @@ ALTER TABLE `imagenes_habitaciones`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `servicios`
 --
 ALTER TABLE `servicios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
