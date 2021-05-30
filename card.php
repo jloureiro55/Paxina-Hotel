@@ -11,7 +11,7 @@ $datos = $db->loadRoomData($habitaciones[$i]->tipo);?>
     <h5 class="card-title"><?php echo $datos['tipo_habitacion'] ?></h5>
     <p class="card-text"><?php echo $datos['descripcion']; ?></p>
     <?php if($_SESSION['rol']== 'estandar'){ ?>
-    <a href="#" class="btn btn-primary">Reservar</a>
+    <form action="room.php" method="get"><input type="submit" name="<?php echo $habitaciones[$i]->tipo?>" class="btn btn-primary" value="Reservar"></form>
     <?php }else{ ?>
     <a href="registerLogin.php" class="btn btn-primary">Reservar</a>
     <?php } ?>

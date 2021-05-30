@@ -343,7 +343,85 @@ class conectDB {
         }
         return $datos;
     }
+    function loadFullData($id){
+        $sql = "select * from habitaciones where id = $id";
+        
+        $db= $this->pdo;
+        
+        if($stmt = $db->prepare($sql)){
+            $stmt->execute();
+            if($row = $stmt->fetch()){
+                return $row;
+            }
+        }
+    }
+    
+    function reserve($id_usuario, $fecha_entrada, $fecha_salida, $id_habitacion,$dias) {
 
+        $db = $this->pdo;
+
+        $sql = 'insert into reservas (id_usuario,num_dias,fecha_entrada, fecha_salida) values(?,?,?,?)';
+
+        $habitaciones_reservas = 'insert into habitaciones_reservas (num_reserva,id_habitacion) value(?,?)';
+
+
+
+        if (($smtp = $db->prepare($sql))) {
+
+            $smtp->bindValue(1, $id_usuario, \PDO::PARAM_STR);
+            $smtp->bindValue(2, $dias, \PDO::PARAM_STR);
+            $smtp->bindValue(3, $fecha_entrada, \PDO::PARAM_STR);
+            $smtp->bindValue(4, $fecha_salida, \PDO::PARAM_STR);
+
+            if ($smtp->execute()) {
+
+                $numReserva = 'select MAX(num_reserva) as ultima_reserva from reservas';
+
+                if ($sm = $db->prepare($numReserva)) {
+                    $sm->execute();
+
+                    if ($row = $sm->fetch(\PDO::FETCH_ASSOC)) {
+                        $numeroReserva = $row['ultima_reserva'];
+                    }
+
+                    $numHabitacion = "select id from habitaciones where id like $id_habitacion";
+
+                    if ($stp = $db->prepare($numHabitacion)) {
+                        $stp->execute();
+
+                        if ($r = $stp->fetch(\PDO::FETCH_ASSOC)) {
+                            $id_habit = $r['id'];
+                        }
+                    }
+                }
+
+                if ($st = $db->prepare($habitaciones_reservas)) {
+
+                    $st->bindValue(1, $numeroReserva, \PDO::PARAM_STR);
+                    $st->bindValue(2, $id_habit, \PDO::PARAM_STR);
+
+                    $st->execute();
+
+                }
+            }
+        }
+    }
+    
+    function loadServices(){
+        $db= $this->pdo;
+        $servicios=[];
+        
+        $sql = 'select * from servicios';
+        
+        if ($stmt = $db->prepare($sql)){
+            
+            $stmt->execute();
+            while($row = $stmt->fetch()){
+                array_push($servicios,$row);
+            }
+        }
+        return $servicios;
+    }
 }
 
 ?>

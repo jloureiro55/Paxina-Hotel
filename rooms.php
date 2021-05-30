@@ -25,7 +25,8 @@
         $checkout = $_POST['checkout'];
         $db = new db($_SESSION['rol']);
         $habitaciones = $db->filterRoom($checkin,$checkout); //Llamamos a la funcion filterRoom para obtener las habitaciones que no están reservadas 
-        
+        setcookie("checkin",$checkin);
+        setcookie("checkout",$checkout);
     }
     if(!isset($_POST['busqueda'])){
         $db = new db($_SESSION['rol']);
