@@ -47,7 +47,8 @@
     <script>
         document.getElementById('logout').addEventlistener('click',cerrar);
         function cerrar(){
-            <?php session_destroy();
+            <?php 
+                session_destroy();
                 session_unset();
             ?>
         }

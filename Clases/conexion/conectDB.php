@@ -327,9 +327,9 @@ class conectDB {
      * @param type $tipo 
      * @return type
      */
-    function loadTypeRoom($tipo) {
+    function loadRoomImg($tipo) {
         try {
-            $datos;
+            $datos=[];
             $sql = "select * from imagenes_habitaciones "
                     . "where id_habitacion_tipo like $tipo";
             $db = $this->pdo;
@@ -337,8 +337,8 @@ class conectDB {
             if ($stmt = $db->prepare($sql)) {
                 $stmt->execute();
 
-                if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                    $datos = $row;
+                while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    array_push($datos,$row);
                 }
             }
             return $datos;
@@ -477,7 +477,7 @@ class conectDB {
             echo $ex->getMessage();
         }
     }
-
+    
 }
 
 ?>

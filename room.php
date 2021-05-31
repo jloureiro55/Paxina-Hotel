@@ -30,7 +30,7 @@
         $info = $db->loadFullData($id);
         $datos_habitacion = $db->loadRoomData($info['tipo_de_habitacion']);
         
-        $img = $db->loadTypeRoom($info['tipo_de_habitacion']);
+        $img = $db->loadRoomImg($info['tipo_de_habitacion']);
         $services = $db->loadServices();
         
         $checkin = $_COOKIE['checkin'];
@@ -64,13 +64,13 @@
             <div class="row">
                 <div class="col-lg-2 order-lg-1 order-2">
                     <ul class="image_list">
-                        <li data-image="<?php echo $img['imagen_habitacion']?>"><img src="<?php echo $img['imagen_habitacion']?>" alt="<?php echo $img['descripcion_imagen']?>"></li>
-                        <li data-image="<?php echo $img['imagen_habitacion']?>"><img src="<?php echo $img['imagen_habitacion']?>" alt="<?php echo $img['descripcion_imagen']?>"></li>
-                        <li data-image="<?php echo $img['imagen_habitacion']?>"><img src="<?php echo $img['imagen_habitacion']?>" alt="<?php echo $img['descripcion_imagen']?>"></li>
+                        <li data-image="<?php echo $img[0]['imagen_habitacion']?>"><img src="<?php echo $img[0]['imagen_habitacion']?>" alt="<?php echo $img[0]['descripcion_imagen']?>"></li>
+                        <li data-image="<?php echo $img[1]['imagen_habitacion']?>"><img src="<?php echo $img[1]['imagen_habitacion']?>" alt="<?php echo $img[1]['descripcion_imagen']?>"></li>
+                        <li data-image="<?php echo $img[2]['imagen_habitacion']?>"><img src="<?php echo $img[2]['imagen_habitacion']?>" alt="<?php echo $img[2]['descripcion_imagen']?>"></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 order-lg-2 order-1">
-                    <div class="image_selected"><img src="<?php echo $img['imagen_habitacion']?>" alt="<?php echo $img['descripcion_imagen']?>"></div>
+                    <div class="image_selected"><img src="<?php echo $img[0]['imagen_habitacion']?>" alt="<?php echo $img[0]['descripcion_imagen']?>"></div>
                 </div>
                 <div class="col-lg-6 order-3">
                     <div class="product_description">

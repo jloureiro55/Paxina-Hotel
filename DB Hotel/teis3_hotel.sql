@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-05-2021 a las 23:56:53
+-- Tiempo de generación: 01-06-2021 a las 01:48:26
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.10
 
@@ -44,7 +44,11 @@ CREATE TABLE `habitaciones` (
 
 INSERT INTO `habitaciones` (`id`, `m2`, `ventana`, `tipo_de_habitacion`, `servicio_limpieza`, `internet`, `precio`, `disponibilidad`) VALUES
 (1, '20.00', b'0', 1, b'0', b'1', '50.00', b'1'),
-(2, '20.00', b'0', 1, b'0', b'1', '50.00', b'1');
+(2, '20.00', b'0', 1, b'0', b'1', '50.00', b'1'),
+(3, '15.00', b'0', 2, b'1', b'1', '60.00', b'1'),
+(4, '20.00', b'0', 4, b'0', b'0', '65.00', b'1'),
+(5, '10.00', b'1', 5, b'0', b'0', '35.00', b'1'),
+(6, '25.00', b'1', 6, b'1', b'1', '100.00', b'1');
 
 -- --------------------------------------------------------
 
@@ -63,7 +67,8 @@ CREATE TABLE `habitaciones_reservas` (
 --
 
 INSERT INTO `habitaciones_reservas` (`id`, `num_reserva`, `id_habitacion`) VALUES
-(1, 1, 1);
+(1, 1, 1),
+(19, 36, 2);
 
 -- --------------------------------------------------------
 
@@ -95,7 +100,11 @@ CREATE TABLE `habitacion_tipo` (
 --
 
 INSERT INTO `habitacion_tipo` (`id`, `tipo_habitacion`, `descripcion`) VALUES
-(1, 'Habitacion doble', 'Habitacion con 2 camas.');
+(1, 'Habitacion doble', 'Habitacion con 2 camas.'),
+(2, 'Habitacion Moderna', 'Habitación con una estetica actual.'),
+(4, 'Habitacion rustica', 'Habitación de estetica estilo rústico.'),
+(5, 'Habitacion simple', 'Habitación de estilo rústico.'),
+(6, 'Habitacion Suite', 'Habitacion de tipo Suite.');
 
 -- --------------------------------------------------------
 
@@ -115,7 +124,21 @@ CREATE TABLE `imagenes_habitaciones` (
 --
 
 INSERT INTO `imagenes_habitaciones` (`id`, `id_habitacion_tipo`, `imagen_habitacion`, `descripcion_imagen`) VALUES
-(1, 1, 'img/habitacion-doble/habitacion_doble.jpg', 'Imagen de la habitación doble');
+(1, 1, 'img/habitacion-doble/habitacion_doble.jpg', 'Imagen de la habitación doble'),
+(2, 1, 'img/habitacion-doble/baño_doble.jpg', 'Imagen de baño de la habitación doble'),
+(3, 1, 'img/habitacion-doble/sofa_doble.jpg', 'Imagen sofa habitacion doble'),
+(4, 2, 'img/habitacion-moderna/habitacion_moderna.jpg', 'Imagen de la habitación moderna'),
+(5, 2, 'img/habitacion-moderna/baño_moderno.jpg', 'Imagen del baño de la habitación moderna'),
+(6, 2, 'img/habitacion-moderna/sofa_moderno.jpg', 'Imagen sofa de la habitacion moderna'),
+(7, 4, 'img/habitacion-rustica/habitacion_rustica.jpg', 'Imagen de la habitacion rustica'),
+(8, 4, 'img/habitacion-rustica/baño_rustico.jpg', 'Imagen del baño de la habitación rustica'),
+(9, 4, 'img/habitacion-rustica/sofa_rustico.jpg', 'Imagen sofa de la habitacion rustica'),
+(10, 5, '\\img\\habitacion-simple\\habitacion_simple.jpg', 'Imagen de la habitacion simple'),
+(11, 5, '\\img\\habitacion-simple\\baño_simple.jpg', 'Imagen del baño de la habitación simple'),
+(12, 5, '\\img\\habitacion-simple\\sofa_simple.jpg', 'Imagen sofa de la habitacion simple'),
+(13, 6, '\\img\\habitacion-suit\\habitacion_suit.jpg', 'Imagen de la Suite'),
+(14, 6, '\\img\\habitacion-suit\\baño_suit.jpg', 'Imagen del baño de la Suite'),
+(15, 6, '\\img\\habitacion-suit\\sofa_suit.jpg', 'Imagen sofa de la Suite');
 
 -- --------------------------------------------------------
 
@@ -142,7 +165,11 @@ INSERT INTO `log` (`user`, `fecha`) VALUES
 (2, '2021-05-30 16:17:33'),
 (2, '2021-05-30 21:42:08'),
 (2, '2021-05-30 21:48:13'),
-(4, '2021-05-30 21:52:46');
+(2, '2021-05-30 22:16:21'),
+(4, '2021-05-30 21:52:46'),
+(4, '2021-05-31 17:00:57'),
+(4, '2021-05-31 20:01:05'),
+(6, '2021-05-31 20:49:17');
 
 -- --------------------------------------------------------
 
@@ -164,7 +191,8 @@ CREATE TABLE `reservas` (
 --
 
 INSERT INTO `reservas` (`num_reserva`, `id_usuario`, `fecha_reserva`, `num_dias`, `fecha_entrada`, `fecha_salida`) VALUES
-(1, 4, '2021-05-28 07:56:33', 3, '2021-05-29', '2021-06-01');
+(1, 4, '2021-05-28 07:56:33', 3, '2021-05-29', '2021-06-01'),
+(36, 4, '2021-05-31 19:42:58', 6, '2021-05-31', '2021-06-06');
 
 -- --------------------------------------------------------
 
@@ -231,7 +259,8 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `nombre`, `email`, `telf`, `direccion`, `password`, `rol_usuario`) VALUES
 (2, 'maruxa', 'javierloureiro2a@gmail.com', '664682983', '', '$2y$10$OZzozR0FtFtlCND1PV3RdOv1MMymv.yaSCF..kXeHPg9yixb00mGm', 2),
 (4, 'Suso', 'casadesuso666@gmail.com', '662492933', '', '$2y$10$dl/PR0JXoIGuVwwQgNV2C.EXGps6HQr7Et9IP99FEPugNmptAk3ei', 2),
-(5, 'susillo', 'susoloko5@gmail.com', '664567899', '', '$2y$10$4gQIde052qOQYXiHcffxCOS0n08Z012F9sBMinAuvSme7n.mggNPC', 2);
+(5, 'susillo', 'susoloko5@gmail.com', '664567899', '', '$2y$10$4gQIde052qOQYXiHcffxCOS0n08Z012F9sBMinAuvSme7n.mggNPC', 2),
+(6, 'Tu madre', 'susoloko7@gmail.com', '664567898', '', '$2y$10$1qfhuXdz4upTGZtRSu04N.5XGFI/c8tOP804S2Irv1zIyfYENbPx6', 2);
 
 --
 -- Índices para tablas volcadas
@@ -317,31 +346,31 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `habitaciones`
 --
 ALTER TABLE `habitaciones`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `habitaciones_reservas`
 --
 ALTER TABLE `habitaciones_reservas`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion_tipo`
 --
 ALTER TABLE `habitacion_tipo`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `imagenes_habitaciones`
 --
 ALTER TABLE `imagenes_habitaciones`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `servicios`
@@ -353,7 +382,7 @@ ALTER TABLE `servicios`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas
