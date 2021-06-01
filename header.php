@@ -22,8 +22,8 @@
                           <a class="nav-link" href="#">Location</a>
                         </li>
                         <li class="nav-item">
-                            <?php if(isset($_SESSION['usuario'])){?>
-                            <a class="nav-link" href="userpage.php"><?php echo $_SESSION['usuario'] ?></a>
+                            <?php if($_SESSION['rol']!='visitante'){?>
+                            <a class="nav-link" href="userpage.php"><?php echo $_SESSION['usuario']->nombre ?></a>
                             <?php }else{?>
                           <a class="nav-link" href="registerLogin.php">Sign in/Login</a>
                             <?php }?>

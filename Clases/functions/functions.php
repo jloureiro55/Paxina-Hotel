@@ -2,6 +2,9 @@
 
 namespace functions;
 
+require_once __DIR__.'/../../autoload.php';
+
+use \usuario\usuario as usuario;
 /** 
  * Clase que contiene algunas funciones que se utilizan en distintas
  * partes del proyecto de la pagina web del hotel.
@@ -78,9 +81,8 @@ class functions {
     function saveSessionData($result) {
 
         session_start();
-        $_SESSION['UserId'] = $result['id'];
+        $_SESSION['usuario'] = new usuario($result['id'],$result['nombre'],$result['email'],$result['telf'],$result['direccion'],$result['rol_usuario']);
         $_SESSION['rol'] = $result['nombre_rol'];
-        $_SESSION['usuario'] = $result['nombre'];
 
         header("location:index.php");
     }

@@ -121,7 +121,7 @@ class conectDB {
      */
     function loginUser($nameLogin) {
         try {
-            $sql = "select usuarios.id as id, nombre, password, rol_usuario, nombre_rol "
+            $sql = "select usuarios.id as id, nombre, password,email,telf,direccion, rol_usuario, nombre_rol "
                     . "from usuarios "
                     . "inner join roles on usuarios.rol_usuario = roles.id"
                     . " where nombre = :nameUser";
@@ -476,6 +476,14 @@ class conectDB {
         } catch (Exception $ex) {
             echo $ex->getMessage();
         }
+    }
+    
+    function ValidateReserve($reservas){
+        $sql= "UPDATE reservas
+		SET validada=1
+        	WHERE num_reserva=?";
+        
+        
     }
     
 }

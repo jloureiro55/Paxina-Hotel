@@ -17,9 +17,12 @@
                 bottom: 0;
             }
         </style>
-        <title>Pagina de <?php echo $_SESSION['usuario']; ?></title>
+        <title>Pagina de <?php echo $_SESSION['usuario']->nombre; ?></title>
         <?php if(!isset($_SESSION['usuario'])){
             header('location:index.php');
+        }else{
+            session_destroy();
+            session_unset();
         } ?>
     </head>
     <body>
@@ -30,11 +33,13 @@
         <div class="row">
             <div class="col-2 border border-primary p-0 text-center bg-light">
                 <img class="col-6 avatar " src="img/Avatar/default-avatar.png">
-                <p><?php echo $_SESSION['usuario']; ?></p>
+                <p><?php echo $_SESSION['usuario']->nombre; ?></p>
                 <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Overview</div>
                 <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Reserves</div>
                 <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Preferences</div>
+                <form>
                 <a href="index.php" id="logout"><div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Log Out</div></a>
+                </form>
             </div>
             <div class="col-10 p-0 border border-primary d-flex d-flex-column">
                 <div class="col-12 border border-primary">
@@ -44,15 +49,6 @@
         <?php require_once 'footer.php';?>
         
     </body>
-    <script>
-        document.getElementById('logout').addEventlistener('click',cerrar);
-        function cerrar(){
-            <?php 
-                session_destroy();
-                session_unset();
-            ?>
-        }
-    </script>
     <script src="externo/jquery/jquery-3.5.1.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 

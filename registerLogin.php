@@ -60,7 +60,7 @@
         if (is_array($result) && isset($result['password'])) {
 
             $hash = $result['password'];
-
+            var_dump($result);
             if (password_verify($passwordLogin, $hash)) {
                 $db->updateAcceso($result['id']);
                 $tool->saveSessionData($result);
