@@ -10,7 +10,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Charm&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="externo/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="estilos/style.css">
-        <title>Hotel Cache - Login/Register</title>
+        <title>Hotel Cache - Habitaciones</title>
     </head>
 
     <?php
@@ -39,7 +39,7 @@
             
             <?php 
             if(isset($habitaciones) && sizeof($habitaciones) > 0){?>
-                <div class="container d-flex col-10 p-2">
+                <div class="container d-flex col-10 p-2 flex-wrap">
                 <?php 
                 for($i = 0 ; $i < sizeof($habitaciones) ; $i++){ //Recorremos las habitaciones disponibles y usamos el fichero card.php para introducir los datos del bucle en ese fichero, que pintará las habitaciones en una tarjeta.
                     require 'card.php';

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-06-2021 a las 01:48:26
+-- Tiempo de generación: 02-06-2021 a las 17:25:01
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.10
 
@@ -35,7 +35,7 @@ CREATE TABLE `habitaciones` (
   `servicio_limpieza` bit(1) NOT NULL DEFAULT b'0',
   `internet` bit(1) NOT NULL DEFAULT b'0',
   `precio` decimal(6,2) NOT NULL,
-  `disponibilidad` bit(1) NOT NULL
+  `disponibilidad` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -43,12 +43,24 @@ CREATE TABLE `habitaciones` (
 --
 
 INSERT INTO `habitaciones` (`id`, `m2`, `ventana`, `tipo_de_habitacion`, `servicio_limpieza`, `internet`, `precio`, `disponibilidad`) VALUES
-(1, '20.00', b'0', 1, b'0', b'1', '50.00', b'1'),
-(2, '20.00', b'0', 1, b'0', b'1', '50.00', b'1'),
-(3, '15.00', b'0', 2, b'1', b'1', '60.00', b'1'),
-(4, '20.00', b'0', 4, b'0', b'0', '65.00', b'1'),
+(1, '20.00', b'0', 1, b'0', b'1', '50.00', b'0'),
+(2, '20.00', b'0', 1, b'0', b'1', '50.00', b'0'),
+(3, '15.00', b'0', 2, b'1', b'1', '60.00', b'0'),
+(4, '20.00', b'0', 4, b'0', b'0', '65.00', b'0'),
 (5, '10.00', b'1', 5, b'0', b'0', '35.00', b'1'),
-(6, '25.00', b'1', 6, b'1', b'1', '100.00', b'1');
+(6, '25.00', b'1', 6, b'1', b'1', '100.00', b'1'),
+(7, '10.00', b'1', 2, b'1', b'1', '20.00', b'1'),
+(8, '10.00', b'1', 2, b'1', b'1', '20.00', b'1'),
+(9, '10.00', b'0', 2, b'0', b'0', '20.00', b'1'),
+(10, '10.00', b'0', 2, b'0', b'0', '20.00', b'1'),
+(11, '10.00', b'0', 2, b'0', b'0', '20.00', b'1'),
+(12, '10.00', b'0', 2, b'0', b'0', '40.00', b'1'),
+(13, '100.00', b'0', 6, b'0', b'0', '5000.00', b'1'),
+(14, '100.00', b'0', 6, b'0', b'0', '5000.00', b'1'),
+(15, '5.00', b'0', 5, b'0', b'0', '15.00', b'1'),
+(16, '5.00', b'0', 5, b'0', b'0', '15.00', b'1'),
+(17, '5.00', b'0', 5, b'0', b'0', '15.00', b'1'),
+(18, '50.00', b'0', 4, b'0', b'0', '70.00', b'1');
 
 -- --------------------------------------------------------
 
@@ -68,7 +80,13 @@ CREATE TABLE `habitaciones_reservas` (
 
 INSERT INTO `habitaciones_reservas` (`id`, `num_reserva`, `id_habitacion`) VALUES
 (1, 1, 1),
-(19, 36, 2);
+(19, 36, 2),
+(20, 37, 4),
+(23, 40, 3),
+(24, 41, 3),
+(35, 52, 14),
+(36, 53, 17),
+(37, 54, 17);
 
 -- --------------------------------------------------------
 
@@ -82,6 +100,16 @@ CREATE TABLE `habitacion_servicio` (
   `fecha_servicio` datetime NOT NULL,
   `fecha_fin_servicio` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `habitacion_servicio`
+--
+
+INSERT INTO `habitacion_servicio` (`id_habitacion`, `id_servicio`, `fecha_servicio`, `fecha_fin_servicio`) VALUES
+(4, 2, '2021-06-01 00:00:00', '2021-06-30 00:00:00'),
+(5, 1, '2021-06-01 00:00:00', '2021-06-06 00:00:00'),
+(14, 1, '2021-06-02 00:00:00', '2021-06-05 00:00:00'),
+(17, 1, '2021-06-02 00:00:00', '2021-06-06 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -166,10 +194,33 @@ INSERT INTO `log` (`user`, `fecha`) VALUES
 (2, '2021-05-30 21:42:08'),
 (2, '2021-05-30 21:48:13'),
 (2, '2021-05-30 22:16:21'),
+(2, '2021-06-01 13:09:31'),
+(2, '2021-06-01 13:20:59'),
+(2, '2021-06-01 13:23:37'),
+(2, '2021-06-01 13:25:36'),
+(2, '2021-06-01 13:27:42'),
+(2, '2021-06-01 13:30:32'),
+(2, '2021-06-01 13:32:50'),
+(2, '2021-06-01 13:33:36'),
+(2, '2021-06-01 13:35:17'),
+(2, '2021-06-01 13:40:50'),
+(2, '2021-06-01 13:41:55'),
+(2, '2021-06-01 13:55:13'),
+(2, '2021-06-01 19:13:48'),
+(2, '2021-06-01 19:29:50'),
+(2, '2021-06-01 19:36:23'),
+(2, '2021-06-01 21:52:05'),
+(2, '2021-06-01 22:03:35'),
+(2, '2021-06-01 22:06:55'),
+(2, '2021-06-02 09:56:44'),
 (4, '2021-05-30 21:52:46'),
 (4, '2021-05-31 17:00:57'),
 (4, '2021-05-31 20:01:05'),
-(6, '2021-05-31 20:49:17');
+(4, '2021-06-01 19:38:57'),
+(4, '2021-06-01 19:40:17'),
+(6, '2021-05-31 20:49:17'),
+(7, '2021-06-01 11:54:05'),
+(8, '2021-06-01 12:09:36');
 
 -- --------------------------------------------------------
 
@@ -183,16 +234,23 @@ CREATE TABLE `reservas` (
   `fecha_reserva` timestamp NOT NULL DEFAULT current_timestamp(),
   `num_dias` smallint(20) NOT NULL,
   `fecha_entrada` date NOT NULL,
-  `fecha_salida` date NOT NULL
+  `fecha_salida` date NOT NULL,
+  `validada` bit(1) DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `reservas`
 --
 
-INSERT INTO `reservas` (`num_reserva`, `id_usuario`, `fecha_reserva`, `num_dias`, `fecha_entrada`, `fecha_salida`) VALUES
-(1, 4, '2021-05-28 07:56:33', 3, '2021-05-29', '2021-06-01'),
-(36, 4, '2021-05-31 19:42:58', 6, '2021-05-31', '2021-06-06');
+INSERT INTO `reservas` (`num_reserva`, `id_usuario`, `fecha_reserva`, `num_dias`, `fecha_entrada`, `fecha_salida`, `validada`) VALUES
+(1, 4, '2021-05-28 07:56:33', 3, '2021-05-29', '2021-06-01', b'1'),
+(36, 4, '2021-05-31 19:42:58', 6, '2021-05-31', '2021-06-06', b'1'),
+(37, 7, '2021-06-01 11:55:10', 29, '2021-06-01', '2021-06-30', b'1'),
+(40, 4, '2021-06-01 19:46:18', 4, '2021-06-01', '2021-06-05', b'0'),
+(41, 4, '2021-06-01 21:20:21', 4, '2021-06-01', '2021-06-05', b'0'),
+(52, 2, '2021-06-02 14:28:17', 3, '2021-06-02', '2021-06-05', b'0'),
+(53, 2, '2021-06-02 14:29:13', 2, '2021-06-05', '2021-06-07', b'0'),
+(54, 2, '2021-06-02 14:29:26', 2, '2021-06-05', '2021-06-07', b'0');
 
 -- --------------------------------------------------------
 
@@ -249,18 +307,21 @@ CREATE TABLE `usuarios` (
   `telf` varchar(9) NOT NULL,
   `direccion` varchar(60) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `rol_usuario` bigint(20) NOT NULL
+  `rol_usuario` bigint(20) NOT NULL,
+  `acceso_log` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `email`, `telf`, `direccion`, `password`, `rol_usuario`) VALUES
-(2, 'maruxa', 'javierloureiro2a@gmail.com', '664682983', '', '$2y$10$OZzozR0FtFtlCND1PV3RdOv1MMymv.yaSCF..kXeHPg9yixb00mGm', 2),
-(4, 'Suso', 'casadesuso666@gmail.com', '662492933', '', '$2y$10$dl/PR0JXoIGuVwwQgNV2C.EXGps6HQr7Et9IP99FEPugNmptAk3ei', 2),
-(5, 'susillo', 'susoloko5@gmail.com', '664567899', '', '$2y$10$4gQIde052qOQYXiHcffxCOS0n08Z012F9sBMinAuvSme7n.mggNPC', 2),
-(6, 'Tu madre', 'susoloko7@gmail.com', '664567898', '', '$2y$10$1qfhuXdz4upTGZtRSu04N.5XGFI/c8tOP804S2Irv1zIyfYENbPx6', 2);
+INSERT INTO `usuarios` (`id`, `nombre`, `email`, `telf`, `direccion`, `password`, `rol_usuario`, `acceso_log`) VALUES
+(2, 'maruxa', 'javierloureiro2a@gmail.com', '664682983', '', '$2y$10$OZzozR0FtFtlCND1PV3RdOv1MMymv.yaSCF..kXeHPg9yixb00mGm', 1, '2021-06-02 09:56:44'),
+(4, 'Suso', 'pruebaconwordpress2021@gmail.com', '662492933', '', '$2y$10$dl/PR0JXoIGuVwwQgNV2C.EXGps6HQr7Et9IP99FEPugNmptAk3ei', 2, '2021-06-01 19:38:58'),
+(5, 'susillo', 'susoloko5@gmail.com', '664567899', '', '$2y$10$4gQIde052qOQYXiHcffxCOS0n08Z012F9sBMinAuvSme7n.mggNPC', 2, NULL),
+(6, 'Tu madre', 'susoloko7@gmail.com', '664567898', '', '$2y$10$1qfhuXdz4upTGZtRSu04N.5XGFI/c8tOP804S2Irv1zIyfYENbPx6', 2, NULL),
+(7, 'mimama', 'susoloko8@gmail.com', '664682984', '', '$2y$10$SlOif8NZaktH3ZJ4YbtQU.5GXqomR2Oxmt39x.dKGISy7CY1vyayC', 2, NULL),
+(8, 'Suso2', 'susoloko66@gmail.com', '664682989', '', '$2y$10$dyz25a.C0t0XBanrrWoB/ecBHfubV6C3h3DiNgnsmaJN/8eQm5egC', 2, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -346,13 +407,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `habitaciones`
 --
 ALTER TABLE `habitaciones`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `habitaciones_reservas`
 --
 ALTER TABLE `habitaciones_reservas`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion_tipo`
@@ -370,7 +431,7 @@ ALTER TABLE `imagenes_habitaciones`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT de la tabla `servicios`
@@ -382,7 +443,7 @@ ALTER TABLE `servicios`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas

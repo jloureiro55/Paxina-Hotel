@@ -41,16 +41,14 @@
     if(isset($_POST['enviar'])){
         try{
         if(isset($_POST['servicio'])){
-            $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias,$_POST['servicio']);
-            
+           $valid =  $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias,$_POST['servicio']);
+            unset($_POST);
         }else{
-            $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias);
-            
+           $valid = $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias);
+           unset($_POST);
         }
         }catch(Exception $e){
             echo $e->getMessage();
-        }finally{
-            unset($_POST);
         }
     }
     
@@ -58,7 +56,16 @@
     ?>
     <body>
         <div class="container-fluid"><!--Contenedor principal-->
-            <?php require_once('header.php') ?>
+            <?php require_once('header.php'); 
+                if(isset($valid) && $valid){
+                    ?>
+                    <div class="alert alert-primary alert-dismissible fade show col-md-8 m-auto text-center mt-2">
+                        <strong>Success!</strong> You have successfully reserved your room!
+                        <button type="button" class="close btn btn-primary " data-dismiss="alert">&times;</button>
+                    </div>
+                <?php
+                }
+            ?>
            <div class="single_product">
         <div class="container-fluid" style=" background-color: #fff; padding: 11px;">
             <div class="row">

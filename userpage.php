@@ -49,8 +49,8 @@ $tool = new func();
             $conec->toggleRoomState($_POST['habitaciones'], 1);
         }
         if (isset($_POST['upload-room']) && $_POST['precio'] != "" && $_POST['m2'] != 0) {
-            $room = new room($_POST['m2'], $_POST['ventana'], $_POST['type'], $_POST['limpieza'], $_POST['internet'], $_POST['precio']);
-            $conec->createRoom($room);
+            $room1 = new room(null,$_POST['m2'], $_POST['ventana'], $_POST['type'], $_POST['limpieza'], $_POST['internet'], $_POST['precio']);
+            $conec->createRoom($room1);
         }
         ?>
     </head>
@@ -107,6 +107,7 @@ $tool = new func();
                                         <h4 class="col-md-12 m-auto p-2 text-center">Disable Rooms</h4>
                                         <select class="col-md-12 m-auto" name="habitaciones[]" multiple="multiple">
                                             <?php
+                                                                        
                                             foreach ($available as $room) {
                                                 echo '<option value="' . $room->id . '">ID:' . $room->id . ' Room Type: ' . $conec->loadRoomData($room->tipo)['tipo_habitacion'] . ' Precio: ' . $room->precio . '</option>';
                                             }
@@ -137,10 +138,10 @@ $tool = new func();
                                 <form class="d-flex p-2 m-auto flex-row" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
                                     <div class="col-md-6 d-flex flex-column">
                                         <div class="col-md-4 m-auto d-flex flex-column">
-                                            <label class="text-center"  for="m2">m2 de la habitacion</label><input type="text" name="m2" placeholder="m2">
+                                            <label class="text-center"  for="m2">m2 de la habitacion</label><input type="number" name="m2" placeholder="m2">
                                         </div>
                                         <div class="col-md-4 m-auto d-flex flex-column">
-                                            <label class="text-center" for="precio">Precio noche</label><input type="text" name="precio" placeholder="precio">
+                                            <label class="text-center" for="precio">Precio noche</label><input type="number" name="precio" placeholder="precio">
                                         </div>
                                         <div class="col-md-4 m-auto d-flex flex-column">
                                             <label class="text-center"  for="ventana">Ventana</label>
@@ -173,21 +174,21 @@ $tool = new func();
                                                 foreach ($types as $type) {
                                                     ?>
                                                     <option value="<?php echo $type['id'] ?>"><?php echo $type['tipo_habitacion'] ?></option>
-                                                   <?php }
-                                                    ?>
-                                                </select>
-                                            </div>
-                                            <div class=" justify-content-center m-auto">
-                                                <input class="btn-success btn col-md-12 m-2" type="submit" name="upload-room" value="Upload room">
-                                            </div>
+                                                <?php }
+                                                ?>
+                                            </select>
                                         </div>
-                                    </form>
-                                </div>
-    <?php } ?>
-                        </div>
+                                        <div class=" justify-content-center m-auto">
+                                            <input class="btn-success btn col-md-12 m-2" type="submit" name="upload-room" value="Upload room">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
-    <?php require_once 'footer.php'; ?>
+            </div>
+            <?php require_once 'footer.php'; ?>
         </div>
     </body>
     <script src="externo/jquery/jquery-3.5.1.min.js"></script>

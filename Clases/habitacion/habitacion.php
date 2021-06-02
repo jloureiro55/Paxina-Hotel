@@ -13,8 +13,8 @@ class Habitacion{
     private $precio;
     
     
-    public function __construct($m2,$ventana,$tipo,$limpieza,$internet,$precio,$id=null) {
-        if($id!= null){
+    public function __construct($id=null,$m2,$ventana,$tipo,$limpieza,$internet,$precio) {
+        if($id != null){
             $this->id = $id;
         }
         $this->m2 = $m2;
@@ -23,6 +23,7 @@ class Habitacion{
         $this->limpieza = $limpieza;
         $this->internet = $internet;
         $this->precio = $precio;
+        
     }
     
     public function __get($var) {

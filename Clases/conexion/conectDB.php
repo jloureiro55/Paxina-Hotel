@@ -263,13 +263,12 @@ class conectDB {
                 $stmt->execute(); // Ejecutamos la setencia preparada
 
                 while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
-
                     //Instancia de un objeto habitacion que recibe por parametros los datos de una habitacion, obtenidos de la base de datos.
                     //Una vez creado el objeto con sus valores, se guarda en el array habitaciones. Este array obtendrá
                     //todas las habitaciones disponibles con sus datos correspondientes.
-                    $habitacion = new habitacion($row['m2'], $row['ventana'],
+                    $habitacion = new habitacion($row['id'],$row['m2'], $row['ventana'],
                             $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
-                            $row['precio'], $row['disponibilidad'],$row['id']);
+                            $row['precio'], $row['disponibilidad']);
                     array_push($habitaciones, $habitacion);
                 }
             } else {
@@ -277,7 +276,6 @@ class conectDB {
             }
 
             unset($stmt);
-
             return $habitaciones;
         } catch (Exception $ex) {
             echo $ex->getMessage();
@@ -301,11 +299,10 @@ class conectDB {
                 $stmt->bindParam(1, $availability);
                 $stmt->execute(); // Ejecutamos la setencia preparada
 
-                while ($row = $stmt->fetch()) {
-
-                    $habitacion = new habitacion( $row['m2'], $row['ventana'],
+                while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
+                    $habitacion = new habitacion($row['id'],$row['m2'], $row['ventana'],
                             $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
-                            $row['precio'], $row['disponibilidad'],$row['id']);
+                            $row['precio'], $row['disponibilidad']);
                     array_push($habitaciones, $habitacion);
                 }
             } else {
@@ -395,7 +392,7 @@ class conectDB {
         try {
 
             $db = $this->pdo;
-
+            $valid=true;
             $sql = 'insert into reservas (id_usuario,num_dias,fecha_entrada, fecha_salida) values(?,?,?,?)';
 
             $habitaciones_reservas = 'insert into habitaciones_reservas (num_reserva,id_habitacion) value(?,?)';
@@ -456,11 +453,12 @@ class conectDB {
             $correo = new email();
             $correo->enviarCorreo("javierloureiro2a@gmail.com","<h1>Reserva pendiente por parte del usuario nº :".$id_usuario."</h1>","Solicitud de reserva");
             $db->commit();
-            
         } catch (Exception $ex) {
             echo $ex->getMessage();
             $db->rollBack();
+            $valid=false;
         }
+        return $valid;
     }
 
     function loadServices() {
