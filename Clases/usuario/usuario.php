@@ -11,6 +11,7 @@ class Usuario{
     private $rol;
     
    public function __construct($id,$nombre,$email,$telf,$direccion,$rol) {
+        $this->id=$id;
         $this->nombre = $nombre;
         $this->email = $email;
         $this->telf = $telf;

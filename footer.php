@@ -1,4 +1,4 @@
-<footer class="bg-info d-flex flex-column pt-3"><!--Footer-->
+<footer class="bg-info d-flex flex-column pt-3 p-0"><!--Footer-->
     <div class=" d-flex flex-row justify-content-around footer">
         <div class="d-flex flex-column">
             <h2>Information</h2>

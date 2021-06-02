@@ -41,14 +41,14 @@
     if(isset($_POST['enviar'])){
         try{
         if(isset($_POST['servicio'])){
-            $db->reserve($_SESSION['UserId'], $checkin, $checkout, $id, $dias,$_POST['servicio']);
-            echo "<script type='text/javascript'>alert(Reserva Realizada);</script>";
+            $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias,$_POST['servicio']);
+            
         }else{
-            $db->reserve($_SESSION['UserId'], $checkin, $checkout, $id, $dias);
-            echo "<script type='text/javascript'>alert(Reserva Realizada);</script>";
+            $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias);
+            
         }
         }catch(Exception $e){
-            echo "<script type='text/javascript'>alert(".$e->getMessage().");</script>";
+            echo $e->getMessage();
         }finally{
             unset($_POST);
         }

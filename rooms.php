@@ -30,7 +30,7 @@
     }
     if(!isset($_POST['busqueda'])){
         $db = new db($_SESSION['rol']);
-        $habitaciones = $db->loadRooms();
+        $habitaciones = $db->loadRooms(1);
     }
     ?>
     <body>
