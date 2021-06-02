@@ -2,6 +2,8 @@
 
 namespace conexion;
 
+require_once (__DIR__.'\..\..\autoload.php');
+
 use \habitacion\Habitacion as habitacion; //Uso de la clase habitacion
 use \email\email as email;
 
@@ -46,7 +48,7 @@ class conectDB {
         try {
             $pdo = new \PDO("mysql:host=" . $this->server . ";dbname=" . $this->nameBD . ";charset=utf8", $this->user, $this->password);
             return $pdo;
-        } catch (Exception $ex) {
+        } catch (\PDOException $ex) {
             echo $ex->getMessage();
         }
     }
@@ -136,7 +138,7 @@ class conectDB {
             $consult->execute();
 
             $result = $consult->fetch(\PDO::FETCH_ASSOC);
-
+            
             $this->saveLog($result['id']);
 
             return $result;

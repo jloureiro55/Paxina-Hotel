@@ -7,26 +7,20 @@
     </server>
     
     <usuario>
-        <nombre>root</nombre>
-        <password></password>
-        <rol>conexion</rol>
-    </usuario>
-    
-    <usuario>
         <nombre>estandar</nombre>
-        <password>kgdczHWxD64vtnX3</password>
+        <password>EaqcaHFQhH7kOnZV</password>
         <rol>estandar</rol>
     </usuario>
     
     <usuario>
-        <nombre>root</nombre>
-        <password></password>
+        <nombre>admin</nombre>
+        <password>JvhiMsoVORQXEsWK</password>
         <rol>admin</rol>
     </usuario>
 
     <usuario>
-        <nombre>root</nombre>
-        <password></password>
+        <nombre>conexion</nombre>
+        <password>6BW6NNhchNTQKt3W</password>
         <rol>visitante</rol>
     </usuario>
     

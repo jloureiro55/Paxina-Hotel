@@ -32,10 +32,10 @@ class Habitacion{
         }
     }
     
-    public function __set($var, $value) {
+    /**public function __set($var, $value) {
         $this->$var = $value;
         
-    }
+    }*/
 }
 
 ?>
