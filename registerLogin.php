@@ -1,3 +1,14 @@
+<?php
+    require_once(__DIR__ . '/autoload.php');
+
+    use \functions\functions as func;
+    use \conexion\conectDB as db;
+
+    $tool = new func();
+
+    $tool->checkSession();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,16 +25,9 @@
     </head>
 
     <?php
-    require_once(__DIR__ . '/autoload.php');
-
-    use \functions\functions as func;
-    use \conexion\conectDB as db;
-
-    $tool = new func();
-
-    $tool->checkSession();
 
     $db = new db($_SESSION['rol']);
+
 
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['register'])) { // Comprobamos si se envio el formulario
         $name = $_POST['name'];

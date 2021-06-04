@@ -1,3 +1,14 @@
+<?php 
+    require_once(__DIR__ . '/autoload.php');
+
+    use \functions\functions as func;
+    use \conexion\conectDB as db;
+    
+    $sesion = new func(); //Instancia un objeto de la clase functions
+        
+    $sesion->checkSession(); //Uso de la función checkSession de la clase functions (Comprueba si hay una sesión y asigna un rol en caso de existir una sesion activa)
+        
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,12 +25,7 @@
     </head>
 
     <?php
-    require_once(__DIR__ . '/autoload.php');
 
-    use \functions\functions as func;
-    use \conexion\conectDB as db;
-    
-    session_start();
     if(isset($_POST['busqueda'])){
         $checkin = $_POST['checkin'];
         $checkout = $_POST['checkout'];

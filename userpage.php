@@ -13,6 +13,34 @@ $tool = new func();
 
     $tool->checkSession();
     $conec = new DB($_SESSION['rol']);
+    $user = json_decode($_SESSION['usuario']);
+    if (isset($_POST['update'])) {
+        $telf = $user->telf;
+        $nombre = $user->nombre;
+        $email = $user->email;
+        $direccion = $user->direccion;
+
+        if ($_POST['name'] != $user->nombre && !empty($_POST['nombre'])) {
+            $nombre = $_POST['nombre'];
+            $user->nombre = $nombre;
+        }
+        if ($_POST['telf'] != $user->telf && $tool->phone($_POST['telf'])) {
+            $telf = $_POST['telf'];
+            $user->telf = $telf;
+        }
+        if ($_POST['email'] != $user->email && $tool->validateEmail($_POST['email'])) {
+            $telf = $_POST['email'];
+            $user->email = $email;
+        }
+        var_dump($_POST['address'] != $user->direccion);
+        if ($_POST['address'] != $user->direccion) {
+            $direccion = $_POST['address'];
+            $user->direccion = $direccion;
+        }
+        
+        $conec->updateUserData($user->id, $nombre, $email, $telf, $direccion);
+        $_SESSION['usuario'] = json_encode($user);
+    }
     ?>
     <head>
         <meta charset="UTF-8">
@@ -29,7 +57,7 @@ $tool = new func();
                 bottom: 0;
             }
         </style>
-        <title>Pagina de <?php echo $_SESSION['usuario']->nombre; ?></title>
+        <title>Pagina de <?php echo $user->nombre; ?></title>
         <?php
         if (isset($_POST['logout'])) {
             session_destroy();
@@ -49,7 +77,7 @@ $tool = new func();
             $conec->toggleRoomState($_POST['habitaciones'], 1);
         }
         if (isset($_POST['upload-room']) && $_POST['precio'] != "" && $_POST['m2'] != 0) {
-            $room1 = new room(null,$_POST['m2'], $_POST['ventana'], $_POST['type'], $_POST['limpieza'], $_POST['internet'], $_POST['precio']);
+            $room1 = new room(null, $_POST['m2'], $_POST['ventana'], $_POST['type'], $_POST['limpieza'], $_POST['internet'], $_POST['precio']);
             $conec->createRoom($room1);
         }
         ?>
@@ -61,7 +89,7 @@ $tool = new func();
             <div class="row">
                 <div class="col-2 border border-primary p-0 text-center bg-light">
                     <img class="col-6 avatar " src="img/Avatar/default-avatar.png">
-                    <p><?php echo $_SESSION['usuario']->nombre; ?></p>
+                    <p><?php echo $user->nombre; ?></p>
                     <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Overview</div>
                     <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Reserves</div>
                     <div class="p-0 pt-2 pb-2 col-12 border border-dark text-center">Preferences</div>
@@ -107,7 +135,6 @@ $tool = new func();
                                         <h4 class="col-md-12 m-auto p-2 text-center">Disable Rooms</h4>
                                         <select class="col-md-12 m-auto" name="habitaciones[]" multiple="multiple">
                                             <?php
-                                                                        
                                             foreach ($available as $room) {
                                                 echo '<option value="' . $room->id . '">ID:' . $room->id . ' Room Type: ' . $conec->loadRoomData($room->tipo)['tipo_habitacion'] . ' Precio: ' . $room->precio . '</option>';
                                             }
@@ -184,11 +211,66 @@ $tool = new func();
                                     </div>
                                 </form>
                             </div>
-                        <?php } ?>
+                        <?php } else if ($_SESSION['rol'] == 'estandar') { ?>
+                            <h1 class="col-md-6 m-auto text-center ">USERPAGE PANEL</h1>
+                            <?php
+                            $reservas = $conec->getReserves($user->id);
+                            if (!empty($reservas)) {
+                                ?>
+                                <div class="col-md-12 justify-content-center d-flex flex-column mt-2">
+                                    <h4 class="col-md-12 m-auto p-2 text-center">YOUR RESERVES</h4>
+
+                                    <?php
+                                    foreach ($reservas as $reserva) {
+                                        $habitacion = $conec->getReservedRoom($reserva['num_reserva']);
+                                        ?>
+                                        <div class="p-0 pt-2 pb-2 col-md-8 m-auto border border-primary text-center">
+                                            <span>Reserve ID: <?php echo $reserva['num_reserva']; ?> Room: <?php echo $habitacion[0]['tipo_habitacion'] ?>  CheckIn date: <?php echo $reserva['fecha_entrada']; ?> CheckOut date: <?php echo $reserva['fecha_salida']; ?> Price <?php echo $habitacion[1]['precio'] * $reserva['num_dias'] . "€" ?> Validated: <?php
+                                                if ($reserva['validada'] == 1) {
+                                                    echo "Yes";
+                                                } else {
+                                                    echo "Pending";
+                                                };
+                                                ?> </span>
+                                        </div>    
+                                    <?php } ?>
+                                </div>
+                            <?php } ?>
+                            <hr>
+                            <div class="col-md-12 justify-content-center d-flex flex-row mt-2">
+                                <div class="col-md-6 justify-content-center d-flex flex-column mt-2">
+                                    <h4 class="col-md-12 m-auto p-2 text-center">USER DATA</h4>
+                                    <div class="col-md-12 m-auto p-2 text-center">
+                                        <p>Name: <?php echo $user->nombre; ?></p>
+                                        <p>Email: <?php echo $user->email; ?></p>
+                                        <p>Phone Number: <?php echo $user->telf; ?></p>
+                                        <?php if ($user->direccion != "") { ?>
+                                            <p>Adress: <?php echo $user->direccion; ?></p>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 justify-content-center d-flex flex-column mt-2">
+                                    <h4 class="col-md-12 m-auto p-2 text-center">UPDATE USER DATA</h4>
+                                    <form class="col-md-12 m-auto p-2 text-center" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" METHOD="post">
+                                        <label for="name">Name: </label><input class="col-md-6" type="text" name="name" value="<?php echo $user->nombre; ?>"><br><br>
+                                        <label for="emal">Email: </label><input class="col-md-6" type="text" name="email" value="<?php echo $user->email; ?>"><br><br>
+                                        <label for="telf">Telefono: </label><input class="col-md-6" type="text" name="telf" value="<?php echo $user->telf; ?>"><br><br>
+                                        <label for="address">Address: </label><input class="col-md-6 ml-2" type="text" name="address" value="<?php
+                                        if ($user->direccion != "") {
+                                            echo $user->direccion;
+                                        }
+                                        ?>"><br>
+                                        <input class="btn-primary btn col-md-2 m-2" type="submit" name="update" value="Update Info">
+
+                                    </form>
+                                </div>
+                            </div>
+                            <hr>
+<?php } ?> 
                     </div>
                 </div>
             </div>
-            <?php require_once 'footer.php'; ?>
+<?php require_once 'footer.php'; ?>
         </div>
     </body>
     <script src="externo/jquery/jquery-3.5.1.min.js"></script>

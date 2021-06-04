@@ -23,7 +23,7 @@
     $sesion = new func();
     
     $sesion->checkSession();
-    
+    $user = json_decode($_SESSION['usuario']);
     if(isset($_GET)){
         $db = new db($_SESSION['rol']);
         $id = key($_GET);
@@ -41,10 +41,10 @@
     if(isset($_POST['enviar'])){
         try{
         if(isset($_POST['servicio'])){
-           $valid =  $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias,$_POST['servicio']);
+           $valid =  $db->reserve($user->id, $checkin, $checkout, $id, $dias,$_POST['servicio']);
             unset($_POST);
         }else{
-           $valid = $db->reserve($_SESSION['usuario']->id, $checkin, $checkout, $id, $dias);
+           $valid = $db->reserve($user->id, $checkin, $checkout, $id, $dias);
            unset($_POST);
         }
         }catch(Exception $e){

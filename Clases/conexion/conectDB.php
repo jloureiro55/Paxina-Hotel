@@ -2,9 +2,9 @@
 
 namespace conexion;
 
-require_once (__DIR__.'\..\..\autoload.php');
+require_once (__DIR__ . '/../../autoload.php');
 
-use \habitacion\Habitacion as habitacion; //Uso de la clase habitacion
+use \habitacion\habitacion as habitacion; //Uso de la clase habitacion
 use \email\email as email;
 
 /*
@@ -19,8 +19,8 @@ class conectDB {
     private $password;
     private $server;
     private $pdo;
-    private $fileXML = __DIR__ . '/../../config/configurationBD.xml'; //Propiedad que obtiene la ruta del fichero de configuracion xml
-    private $fileXSD = __DIR__ . '/../../config/configurationBD.xsd'; //Propiedad que obtiene la ruta del fichero de configuracion xsd
+    private $fileXML = __DIR__ . '/../../config/configurationdb.xml'; //Propiedad que obtiene la ruta del fichero de configuracion xml
+    private $fileXSD = __DIR__ . '/../../config/configurationdb.xsd'; //Propiedad que obtiene la ruta del fichero de configuracion xsd
 
     /**
      * Función constructor que recibe un rol de un usuario y devuelve una conexion en caso de que
@@ -36,6 +36,7 @@ class conectDB {
         $this->server = $data[1];
         $this->user = $data[2];
         $this->password = $data[3];
+
         $this->pdo = $this->connect();
     }
 
@@ -138,7 +139,7 @@ class conectDB {
             $consult->execute();
 
             $result = $consult->fetch(\PDO::FETCH_ASSOC);
-            
+
             $this->saveLog($result['id']);
 
             return $result;
@@ -179,7 +180,7 @@ class conectDB {
      * @param type $email String
      * @param type $telf String
      */
-    function updateUserData($id, $nombre, $email, $telf) {
+    function updateUserData($id, $nombre, $email, $telf, $direccion) {
         try {
             $sql = "UPDATE usuarios set nombre= ?, email=?, telf =?, direccion = ?, modificacion_log = now() where id = ?;";
 
@@ -191,10 +192,12 @@ class conectDB {
 
                 $smtp->bindValue(1, $nombre, \PDO::PARAM_STR);
                 $smtp->bindValue(2, $email, \PDO::PARAM_STR);
-                $smtp->bindValue(3, $telf, \PDO::PARAM_STR);
-                $smtp->bindValue(1, $direccion, \PDO::PARAM_STR);
+                $smtp->bindValue(3, $telf, \PDO::PARAM_INT);
+                $smtp->bindValue(4, $direccion, \PDO::PARAM_STR);
+                $smtp->bindValue(5, $id, \PDO::PARAM_INT);
 
                 $smtp->execute();
+                var_dump($smtp->execute());
             }
         } catch (Exception $ex) {
             echo $ex->getMessage();
@@ -268,7 +271,7 @@ class conectDB {
                     //Instancia de un objeto habitacion que recibe por parametros los datos de una habitacion, obtenidos de la base de datos.
                     //Una vez creado el objeto con sus valores, se guarda en el array habitaciones. Este array obtendrá
                     //todas las habitaciones disponibles con sus datos correspondientes.
-                    $habitacion = new habitacion($row['id'],$row['m2'], $row['ventana'],
+                    $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
                             $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
                             $row['precio'], $row['disponibilidad']);
                     array_push($habitaciones, $habitacion);
@@ -302,7 +305,7 @@ class conectDB {
                 $stmt->execute(); // Ejecutamos la setencia preparada
 
                 while ($row = $stmt->fetch(\PDO::FETCH_BOTH)) {
-                    $habitacion = new habitacion($row['id'],$row['m2'], $row['ventana'],
+                    $habitacion = new habitacion($row['id'], $row['m2'], $row['ventana'],
                             $row['tipo_de_habitacion'], $row['servicio_limpieza'], $row['internet'],
                             $row['precio'], $row['disponibilidad']);
                     array_push($habitaciones, $habitacion);
@@ -328,7 +331,7 @@ class conectDB {
      */
     function loadRoomImg($tipo) {
         try {
-            $datos=[];
+            $datos = [];
             $sql = "select * from imagenes_habitaciones "
                     . "where id_habitacion_tipo like $tipo";
             $db = $this->pdo;
@@ -336,8 +339,8 @@ class conectDB {
             if ($stmt = $db->prepare($sql)) {
                 $stmt->execute();
 
-                while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                    array_push($datos,$row);
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    array_push($datos, $row);
                 }
             }
             return $datos;
@@ -394,13 +397,13 @@ class conectDB {
         try {
 
             $db = $this->pdo;
-            $valid=true;
+            $valid = true;
             $sql = 'insert into reservas (id_usuario,num_dias,fecha_entrada, fecha_salida) values(?,?,?,?)';
 
             $habitaciones_reservas = 'insert into habitaciones_reservas (num_reserva,id_habitacion) value(?,?)';
 
             $db->beginTransaction();
-            
+
             if (($smtp = $db->prepare($sql))) {
 
                 $smtp->bindValue(1, $id_usuario, \PDO::PARAM_STR);
@@ -453,12 +456,12 @@ class conectDB {
                 }
             }
             $correo = new email();
-            $correo->enviarCorreo("javierloureiro2a@gmail.com","<h1>Reserva pendiente por parte del usuario nº :".$id_usuario."</h1>","Solicitud de reserva");
+            $correo->enviarCorreo("javierloureiro2a@gmail.com", "<h1>Reserva pendiente por parte del usuario nº :" . $id_usuario . "</h1>", "Solicitud de reserva");
             $db->commit();
         } catch (Exception $ex) {
             echo $ex->getMessage();
             $db->rollBack();
-            $valid=false;
+            $valid = false;
         }
         return $valid;
     }
@@ -482,17 +485,17 @@ class conectDB {
             echo $ex->getMessage();
         }
     }
-    
-    function ValidateReserve($reservas){
-        $sql= "UPDATE reservas
+
+    function ValidateReserve($reservas) {
+        $sql = "UPDATE reservas
 		SET validada=1
         	WHERE num_reserva=?";
-        $valid=false;
+        $valid = false;
         $correos = [];
         $db = $this->pdo;
-        try{
+        try {
             $db->beginTransaction();
-            foreach($reservas as $reserva){
+            foreach ($reservas as $reserva) {
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(1, $reserva);
                 $stmt->execute();
@@ -500,31 +503,32 @@ class conectDB {
                 $st = $db->prepare($user);
                 $st->bindParam(1, $reserva);
                 $st->execute();
-                if($row = $st->fetch(\PDO::FETCH_ASSOC)){
-                    array_push($correos,$row);
+                if ($row = $st->fetch(\PDO::FETCH_ASSOC)) {
+                    array_push($correos, $row);
                 }
             }
             $db->commit();
-            $valid=true;
+            $valid = true;
         } catch (Exception $ex) {
-            $valid=false;
+            $valid = false;
             $db->rollBack();
         }
         $correo = new email();
-        if($valid){
-        foreach($correos as $mail){
-            $correo->enviarCorreo($mail['email'],"<h1>Su Reserva se ha realizado con exito!</h1><br><p>Visite su pagina de usuario para mas informacion <a href=\"\">Pulse aquí</a></p>","Reserva con exito");
-        }  }
+        if ($valid) {
+            foreach ($correos as $mail) {
+                $correo->enviarCorreo($mail['email'], "<h1>Su Reserva se ha realizado con exito!</h1><br><p>Visite su pagina de usuario para mas informacion <a href=\"\">Pulse aquí</a></p>", "Reserva con exito");
+            }
+        }
     }
-    
-    function DeleteReserve($reservas){
-        $sql= "DELETE from habitaciones_reservas where num_reserva=?";
-        $s= "DELETE from reservas where num_reserva=?";
+
+    function DeleteReserve($reservas) {
+        $sql = "DELETE from habitaciones_reservas where num_reserva=?";
+        $s = "DELETE from reservas where num_reserva=?";
         $correos = [];
         $db = $this->pdo;
-        try{
+        try {
             $db->beginTransaction();
-            foreach($reservas as $reserva){
+            foreach ($reservas as $reserva) {
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(1, $reserva);
                 $stmt->execute();
@@ -537,78 +541,129 @@ class conectDB {
             $db->rollBack();
         }
     }
-    
-    function loadPendingReserves(){
+
+    function loadPendingReserves() {
         $sql = "SELECT r.num_reserva as reserva, r.fecha_entrada as entrada,r.fecha_salida as salida, hr.id_habitacion as habitacion from reservas as r inner join habitaciones_reservas as hr where r.num_reserva=hr.num_reserva and r.validada=0";
-        $reserves=[];
+        $reserves = [];
         $db = $this->pdo;
-        try{
+        try {
             $stmt = $db->prepare($sql);
             $stmt->execute();
-            while($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
-                array_push($reserves,$row);
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                array_push($reserves, $row);
             }
         } catch (\Exception $ex) {
             $ex->getMessage();
         }
         return $reserves;
     }
-    
-    function toggleRoomState($rooms,$state){
-        $sql= "UPDATE habitaciones
+
+    function toggleRoomState($rooms, $state) {
+        $sql = "UPDATE habitaciones
 		SET disponibilidad = ?
         	WHERE id = ?";
         $db = $this->pdo;
-        try{
+        try {
             $db->beginTransaction();
-            foreach($rooms as $room){
+            foreach ($rooms as $room) {
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam(1, $state, \PDO::PARAM_INT);
                 $stmt->bindParam(2, $room);
                 $stmt->execute();
             }
             $db->commit();
-            
         } catch (Exception $ex) {
             $db->rollBack();
         }
-        
     }
-    
-    function createRoom($habitacion){
+
+    function createRoom($habitacion) {
         $sql = "insert into habitaciones (m2,ventana,tipo_de_habitacion,servicio_limpieza,internet,precio) values (?,?,?,?,?,?)";
         $db = $this->pdo;
-        try{
+        try {
             $stmt = $db->prepare($sql);
-            $stmt->bindParam(1, $habitacion->m2 , \PDO::PARAM_INT);
-            $stmt->bindParam(2, $habitacion->ventana , \PDO::PARAM_INT);
-            $stmt->bindParam(3, $habitacion->tipo , \PDO::PARAM_INT);
-            $stmt->bindParam(4, $habitacion->limpieza , \PDO::PARAM_INT);
-            $stmt->bindParam(5, $habitacion->internet , \PDO::PARAM_INT);
-            $stmt->bindParam(6, $habitacion->precio , \PDO::PARAM_INT);
+            $stmt->bindParam(1, $habitacion->m2, \PDO::PARAM_INT);
+            $stmt->bindParam(2, $habitacion->ventana, \PDO::PARAM_INT);
+            $stmt->bindParam(3, $habitacion->tipo, \PDO::PARAM_INT);
+            $stmt->bindParam(4, $habitacion->limpieza, \PDO::PARAM_INT);
+            $stmt->bindParam(5, $habitacion->internet, \PDO::PARAM_INT);
+            $stmt->bindParam(6, $habitacion->precio, \PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $ex) {
-
+            
         }
     }
-    
-    function getTypes(){
+
+    function getTypes() {
         $sql = "select * from habitacion_tipo";
-        $types=[];
+        $types = [];
         $db = $this->pdo;
-        
-        try{
+
+        try {
             $stmt = $db->prepare($sql);
-            if($stmt->execute()){
-                while($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
-                    array_push($types,$row);
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    array_push($types, $row);
                 }
             }
             return $types;
         } catch (Exception $ex) {
-
+            
         }
     }
+
+    function getReserves($id) {
+        $sql = "select * from reservas as r where r.id_usuario = ?";
+
+        $reserves = [];
+        $db = $this->pdo;
+
+        try {
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(1, $id);
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    array_push($reserves, $row);
+                }
+            }
+            return $reserves;
+        } catch (\Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
+
+    function getReservedRoom($reserve) {
+        $sql = "select tipo_habitacion from habitacion_tipo where id=("
+                . "select tipo_de_habitacion from habitaciones as h where h.id=("
+                . "select id_habitacion from habitaciones_reservas where num_reserva = ?)) ";
+
+        $datos = [];
+
+        $sql2 = "select precio from habitaciones as h where h.id=("
+                . "select id_habitacion from habitaciones_reservas where num_reserva = ?)";
+
+        $db = $this->pdo;
+        try {
+            if ($stmt = $db->prepare($sql)) {
+                $stmt->bindParam(1, $reserve);
+                $stmt->execute();
+                if ($row = $stmt->fetch()) {
+                    array_push($datos, $row);
+                }
+            }
+            if ($st = $db->prepare($sql2)) {
+                $st->bindParam(1, $reserve);
+                $st->execute();
+                if ($row = $st->fetch()) {
+                    array_push($datos, $row);
+                }
+            }
+            return $datos;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
+
 }
 
 ?>

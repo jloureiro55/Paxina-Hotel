@@ -2,16 +2,16 @@
 
 namespace functions;
 
-require_once __DIR__.'/../../autoload.php';
+require_once __DIR__ . '/../../autoload.php';
 
 use \usuario\usuario as usuario;
-/** 
+
+/**
  * Clase que contiene algunas funciones que se utilizan en distintas
  * partes del proyecto de la pagina web del hotel.
  */
 class functions {
 
-    
     /**
      * Función que comprueba un número de telefono
      * @param type $numberPhone un número
@@ -32,12 +32,11 @@ class functions {
         }
     }
 
-    /** 
+    /**
      * Función que encripta una contraseña
      * @param type $password String
      * @return Devuelve una contraseña cifrada
      */
-
     function encryptionPassword($password) {
 
         $pass = password_hash($password, PASSWORD_DEFAULT);
@@ -45,7 +44,6 @@ class functions {
         return $pass;
     }
 
-    
     /**
      * Función que comprueba una contraseña cifrada con el hash
      * @param type $password
@@ -59,8 +57,7 @@ class functions {
         return $encryptionPass;
     }
 
-    
-    /** 
+    /**
      * Función que valida un email introducido es correcto
      * @param type $email
      * @return boolean
@@ -74,20 +71,20 @@ class functions {
         }
     }
 
-    /** 
+    /**
      * Función que guarda el inicio de una sesión y redirige a la pagina principal
      * @param type $result
      */
     function saveSessionData($result) {
 
         session_start();
-        $_SESSION['usuario'] = new usuario($result['id'],$result['nombre'],$result['email'],$result['telf'],$result['direccion'],$result['rol_usuario']);
+        $_SESSION['usuario'] = json_encode(new usuario($result['id'], $result['nombre'], $result['email'], $result['telf'], $result['direccion'], $result['rol_usuario']));
         $_SESSION['rol'] = $result['nombre_rol'];
 
         header("location:index.php");
     }
 
-    /** 
+    /**
      * Función que comprueba el inicio de sesion
      */
     function checkSession() {
@@ -101,14 +98,13 @@ class functions {
             }
         }
     }
-    
-    function dateDiff($date1, $date2)
-{
-    $date1_ts = strtotime($date1);
-    $date2_ts = strtotime($date2);
-    $diff = $date2_ts - $date1_ts;
-    return round($diff / 86400);
-}
+
+    function dateDiff($date1, $date2) {
+        $date1_ts = strtotime($date1);
+        $date2_ts = strtotime($date2);
+        $diff = $date2_ts - $date1_ts;
+        return round($diff / 86400);
+    }
 
 }
 ?>

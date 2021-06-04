@@ -2,7 +2,7 @@
 
 namespace usuario;
 
-class Usuario{
+class Usuario implements \JsonSerializable {
     private $id;
     private $nombre;
     private $email;
@@ -29,6 +29,18 @@ class Usuario{
     public function __set($var, $value) {
         $this->$var = $value;
         
+    }
+
+    public function jsonSerialize() {
+        return 
+        [
+            'id'   => $this->id,
+            'nombre' => $this->nombre,
+            'email'   => $this->email,
+            'telf' => $this->telf,
+            'direccion' => $this->direccion,
+            'rol'   => $this->rol
+        ];
     }
     
     

@@ -1,4 +1,3 @@
-
         <div class="row">
             <header class="p-0">
                 <nav class="navbar navbar-expand-lg navbar-light bg-info"><!--Barra de navegación-->
@@ -23,7 +22,10 @@
                         </li>
                         <li class="nav-item">
                             <?php if($_SESSION['rol']!='visitante'){?>
-                            <a class="nav-link" href="userpage.php"><?php echo $_SESSION['usuario']->nombre ?></a>
+                            <a class="nav-link" href="userpage.php"><?php
+				$user = json_decode($_SESSION['usuario']);	
+ 				echo $user->nombre;
+ 				?></a>
                             <?php }else{?>
                           <a class="nav-link" href="registerLogin.php">Sign in/Login</a>
                             <?php }?>

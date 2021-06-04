@@ -40,7 +40,7 @@ class email {
         $mail->IsSMTP();
         $mail->SMTPDebug = 0;  // cambiar a 1 o 2 para ver errores
         $mail->SMTPAuth = true;
-        $mail->SMTPSecure = "tls";
+        $mail->SMTPSecure = 'tls';
         $mail->Host = "smtp.gmail.com";
         $mail->Port = 587;
         $mail->Username = $this->email;  // Cuenta del Gmail
@@ -52,8 +52,9 @@ class email {
         $mail->CharSet = 'UTF-8';
         
         $mail->AddAddress($correo, $correo);
-
+		
         if (!$mail->Send()) {
+			echo $mail->ErrorInfo;
             return $mail->ErrorInfo;
         } else {
             return TRUE;
