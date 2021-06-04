@@ -66,7 +66,6 @@ $tool = new func();
             session_unset();
             header('location:index.php');
         }
-        var_dump($_POST);
         if (isset($_POST['validar']) && !empty($_POST['reservas'])) {
             $conec->ValidateReserve($_POST['reservas']);
         }
@@ -374,7 +373,6 @@ $tool = new func();
 
                                                         if ($dataRoom['id'] == $type['id']) {
                                                             ?>
-
                                                             <option value="<?php echo $type['id'] ?>" selected><?php echo $type['tipo_habitacion'] ?></option>
                                                         <?php } else { ?>
                                                             <option value="<?php echo $type['id'] ?>"><?php echo $type['tipo_habitacion'] ?></option>
