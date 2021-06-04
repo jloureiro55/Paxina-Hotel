@@ -91,7 +91,7 @@
                                     <div class="login-space">
                                         <form class="form-register" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" >
                                             <div class="login">
-                                                <div class="group"> <label for="user" class="label">Username</label> <input name="user" id="user" type="text" class="input" placeholder="Enter your username"> </div>
+                                                <div class="group"> <label for="user" class="label">Email</label> <input name="user" id="user" type="text" class="input" placeholder="Enter your email"> </div>
                                                 <div class="group"> <label for="pass" class="label">Password</label> <input name="pass" id="pass" type="password" class="input" data-type="password" placeholder="Enter your password"> </div>
                                                 <div class="group"> <input id="check" type="checkbox" class="check" checked> <label for="check"><span class="icon"></span> Keep me Signed in</label> </div>
                                                 <div class="group"> <input type="submit" class="button" name="login" value="Sign In"> </div>

@@ -14,6 +14,9 @@ $tool = new func();
     $tool->checkSession();
     $conec = new DB($_SESSION['rol']);
     $user = json_decode($_SESSION['usuario']);
+    if ($_SESSION['rol'] == 'visitante') {
+        header('location:index.php');
+    }
     if (isset($_POST['update'])) {
         $telf = $user->telf;
         $nombre = $user->nombre;
@@ -32,12 +35,11 @@ $tool = new func();
             $telf = $_POST['email'];
             $user->email = $email;
         }
-        var_dump($_POST['address'] != $user->direccion);
         if ($_POST['address'] != $user->direccion) {
             $direccion = $_POST['address'];
             $user->direccion = $direccion;
         }
-        
+
         $conec->updateUserData($user->id, $nombre, $email, $telf, $direccion);
         $_SESSION['usuario'] = json_encode($user);
     }
@@ -64,6 +66,7 @@ $tool = new func();
             session_unset();
             header('location:index.php');
         }
+        var_dump($_POST);
         if (isset($_POST['validar']) && !empty($_POST['reservas'])) {
             $conec->ValidateReserve($_POST['reservas']);
         }
@@ -79,6 +82,9 @@ $tool = new func();
         if (isset($_POST['upload-room']) && $_POST['precio'] != "" && $_POST['m2'] != 0) {
             $room1 = new room(null, $_POST['m2'], $_POST['ventana'], $_POST['type'], $_POST['limpieza'], $_POST['internet'], $_POST['precio']);
             $conec->createRoom($room1);
+        }
+        if (isset($_POST['update-room'])) {
+            $conec->updateRoom($_POST);
         }
         ?>
     </head>
@@ -165,31 +171,31 @@ $tool = new func();
                                 <form class="d-flex p-2 m-auto flex-row" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
                                     <div class="col-md-6 d-flex flex-column">
                                         <div class="col-md-4 m-auto d-flex flex-column">
-                                            <label class="text-center"  for="m2">m2 de la habitacion</label><input type="number" name="m2" placeholder="m2">
+                                            <label class="text-center"  for="m2">m2 Room</label><input type="number" name="m2" placeholder="m2" min="1">
                                         </div>
                                         <div class="col-md-4 m-auto d-flex flex-column">
-                                            <label class="text-center" for="precio">Precio noche</label><input type="number" name="precio" placeholder="precio">
+                                            <label class="text-center" for="precio">Price</label><input type="number" name="precio" placeholder="precio" min="0">
                                         </div>
                                         <div class="col-md-4 m-auto d-flex flex-column">
-                                            <label class="text-center"  for="ventana">Ventana</label>
+                                            <label class="text-center"  for="ventana">Window</label>
                                             <select class="col-md-12 m-auto" name="ventana">
-                                                <option value="b'1'">Si</option>
+                                                <option value="b'1'">Yes</option>
                                                 <option value="b'0'">No</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6 d-flex flex-column">
                                         <div class="col-md-4 m-auto d-flex flex-column">
-                                            <label class="text-center" for="limpieza">Servicio de limpieza</label>
+                                            <label class="text-center" for="limpieza">Cleaning Service</label>
                                             <select class="col-md-12 m-auto" name="limpieza">
-                                                <option value="b'1'">Si</option>
+                                                <option value="b'1'">Yes</option>
                                                 <option value="b'0'">No</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4 m-auto d-flex flex-column">
                                             <label class="text-center" for="internet">Internet</label>
                                             <select class="col-md-12 m-auto" name="internet">
-                                                <option value="b'1'">Si</option>
+                                                <option value="b'1'">Yes</option>
                                                 <option value="b'0'">No</option>
                                             </select>
                                         </div>
@@ -210,67 +216,243 @@ $tool = new func();
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-                        <?php } else if ($_SESSION['rol'] == 'estandar') { ?>
-                            <h1 class="col-md-6 m-auto text-center ">USERPAGE PANEL</h1>
-                            <?php
-                            $reservas = $conec->getReserves($user->id);
-                            if (!empty($reservas)) {
-                                ?>
-                                <div class="col-md-12 justify-content-center d-flex flex-column mt-2">
-                                    <h4 class="col-md-12 m-auto p-2 text-center">YOUR RESERVES</h4>
+                                <hr>
+                                <form class="d-grid p-2 m-auto" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                                    <h3 class="col-md-12 m-auto p-2 text-center">VIEW USER RESERVES</h3>
+                                    <select class="col-md-6 m-auto p-2" name="user">
+                                        <?php
+                                        $users = $conec->getUsers();
+                                        foreach ($users as $usuario) {
+                                            ?>
+                                            <option value="<?php echo $usuario['id']; ?>"><?php echo $usuario['id'] . "." . $usuario['nombre']; ?> </option>
+                                        <?php } ?>
+                                    </select>
 
-                                    <?php
-                                    foreach ($reservas as $reserva) {
-                                        $habitacion = $conec->getReservedRoom($reserva['num_reserva']);
+                                    <div class=" col-md-6 d-flex flex-row m-auto">
+                                        <input class="btn-success btn col-md-4 m-2 m-auto mt-2" type="submit" name="search" value="Search">
+                                        <input class="btn-success btn col-md-4 m-2 m-auto mt-2" type="submit" name="searchAll" value="View All Users">
+                                    </div>
+                                </form>
+                                <?php
+                                if (isset($_POST['search'])) {
+                                    $reservasuser = $conec->getReserves($_POST['user']);
+                                    if (!empty($reservasuser)) {
                                         ?>
-                                        <div class="p-0 pt-2 pb-2 col-md-8 m-auto border border-primary text-center">
-                                            <span>Reserve ID: <?php echo $reserva['num_reserva']; ?> Room: <?php echo $habitacion[0]['tipo_habitacion'] ?>  CheckIn date: <?php echo $reserva['fecha_entrada']; ?> CheckOut date: <?php echo $reserva['fecha_salida']; ?> Price <?php echo $habitacion[1]['precio'] * $reserva['num_dias'] . "€" ?> Validated: <?php
-                                                if ($reserva['validada'] == 1) {
-                                                    echo "Yes";
-                                                } else {
-                                                    echo "Pending";
-                                                };
-                                                ?> </span>
-                                        </div>    
+                                        <div class="col-md-12 justify-content-center d-flex flex-column mt-2">
+                                            <h4 class="col-md-12 m-auto p-2 text-center"><?php echo strtoupper($conec->getUsername($_POST['user'])[0]); ?>'S RESERVES</h4>
+
+                                            <?php
+                                            foreach ($reservasuser as $reserva) {
+                                                $habitacion = $conec->getReservedRoom($reserva['num_reserva']);
+                                                ?>
+                                                <div class="p-0 pt-2 pb-2 col-md-8 m-auto border border-primary text-center">
+                                                    <span>Reserve ID: <?php echo $reserva['num_reserva']; ?> Room: <?php echo $habitacion[0]['tipo_habitacion'] ?>  CheckIn date: <?php echo $reserva['fecha_entrada']; ?> CheckOut date: <?php echo $reserva['fecha_salida']; ?> Price <?php echo $habitacion[1]['precio'] * $reserva['num_dias'] . "€" ?> Validated: <?php
+                                                        if ($reserva['validada'] == 1) {
+                                                            echo "Yes";
+                                                        } else {
+                                                            echo "Pending";
+                                                        };
+                                                        ?> </span>
+                                                </div>    
+                                            <?php } ?>
+                                        </div>
+                                    <?php } else { ?>
+                                        <h5 class="col-md-12 m-auto p-2 text-center">The user have 0 reserves.</h5>
+                                        <?php
+                                    }
+                                } else if (isset($_POST['searchAll'])) {
+                                    $reservasuser = $conec->getReserves();
+                                    if (!empty($reservasuser)) {
+                                        ?>
+                                        <div class="col-md-12 justify-content-center d-flex flex-column mt-2">
+                                            <h4 class="col-md-12 m-auto p-2 text-center">ALL RESERVES</h4>
+
+                                            <?php
+                                            foreach ($reservasuser as $reserva) {
+                                                $habitacion = $conec->getReservedRoom($reserva['num_reserva']);
+                                                ?>
+                                                <div class="p-0 pt-2 pb-2 col-md-8 m-auto border border-primary text-center">
+                                                    <span>Reserve ID: <?php echo $reserva['num_reserva']; ?> User:<?php echo " " . $conec->getUsername($reserva['id_usuario'])[0] ?> Room: <?php echo $habitacion[0]['tipo_habitacion'] ?>  CheckIn date: <?php echo $reserva['fecha_entrada']; ?> CheckOut date: <?php echo $reserva['fecha_salida']; ?> Price <?php echo $habitacion[1]['precio'] * $reserva['num_dias'] . "€" ?> Validated: <?php
+                                                        if ($reserva['validada'] == 1) {
+                                                            echo "Yes";
+                                                        } else {
+                                                            echo "Pending";
+                                                        };
+                                                        ?> </span>
+                                                </div>    
+                                            <?php } ?>
+                                        </div>
+                                    <?php } else { ?>
+                                        <h5 class="col-md-12 m-auto p-2 text-center">There are no reserves on the system.</h5>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </div>
+                            <hr>
+                            <h3 class="col-md-12 m-auto p-2 text-center">MODIFY ROOM DATA</h3>
+                            <?php
+                            $rooms = $conec->loadAllRooms();
+                            ?>
+                            <form class="d-grid p-2 m-auto" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                                <select class="col-md-6 m-auto p-2" name="habitacion">
+                                    <?php foreach ($rooms as $room) { ?>
+                                        <option value="<?php echo $room->id ?>">ID: <?php echo $room->id ?> Type: <?php echo $conec->loadRoomData($room->tipo)['tipo_habitacion']; ?> </option>
+                                    <?php }
+                                    ?>
+                                </select>
+                                <input class="btn-success btn col-md-2 m-2 m-auto mt-2" type="submit" name="ChooseRoom" value="Search">
+                            </form>
+                            <?php
+                            if (isset($_POST['ChooseRoom'])) {
+                                $dataRoom = $conec->loadFullData($_POST['habitacion']);
+                                ?>
+                                <h3 class="col-md-12 m-auto p-2 text-center">MODIFYING ROOM ID: <?php echo $dataRoom['id']; ?></h3>
+                                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                                <div class="d-flex p-2 m-auto flex-row">
+                                    
+                                        <div class="col-md-6 d-flex flex-column">
+                                            <div class="col-md-4 m-auto d-flex flex-column">
+                                                <label class="text-center"  for="m2">m2 Room</label><input type="number" name="m2" placeholder="m2" value="<?php echo $dataRoom['m2']; ?>" min="1">
+                                            </div>
+                                            <div class="col-md-4 m-auto d-flex flex-column">
+                                                <label class="text-center" for="precio">Price</label><input type="number" name="precio" placeholder="precio" value="<?php echo $dataRoom['precio']; ?>" min="0">
+                                            </div>
+                                            <div class="col-md-4 m-auto d-flex flex-column">
+                                                <label class="text-center"  for="ventana">Window</label>
+                                                <select class="col-md-12 m-auto" name="ventana" value="<?php echo $dataRoom['ventana']; ?>"">
+                                                    <?php if ($dataRoom['ventana'] == 1) { ?> <option value="b'1'" selected>Yes</option><?php } else { ?>
+                                                        <option value="b'1'" selected>Yes</option>
+                                                        <?php
+                                                    }
+                                                    if ($dataRoom['ventana'] == 0) {
+                                                        ?>
+                                                        <option value="b'0'" selected>No</option>
+                                                    <?php } else { ?>
+                                                        <option value="b'0'">No</option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 d-flex flex-column">
+                                            <div class="col-md-4 m-auto d-flex flex-column">
+                                                <label class="text-center" for="limpieza">Cleaning Service</label>
+                                                <select class="col-md-12 m-auto" name="limpieza" value="<?php echo $dataRoom['servicio_limpieza']; ?>">
+                                                    <?php if ($dataRoom['servicio_limpieza'] == 1) { ?> <option value="b'1'" selected>Yes</option><?php } else { ?>
+                                                        <option value="b'1'" selected>Yes</option>
+                                                        <?php
+                                                    }
+                                                    if ($dataRoom['servicio_limpieza'] == 0) {
+                                                        ?>
+                                                        <option value="b'0'" selected>No</option>
+                                                    <?php } else { ?>
+                                                        <option value="b'0'">No</option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 m-auto d-flex flex-column">
+                                                <label class="text-center" for="internet">Internet</label>
+                                                <select class="col-md-12 m-auto" name="internet" value="<?php echo $dataRoom['internet']; ?>">
+                                                    <?php if ($dataRoom['internet'] == 1) { ?> <option value="b'1'" selected>Yes</option><?php } else { ?>
+                                                        <option value="b'1'" selected>Yes</option>
+                                                        <?php
+                                                    }
+                                                    if ($dataRoom['internet'] == 0) {
+                                                        ?>
+                                                        <option value="b'0'" selected>No</option>
+                                                    <?php } else { ?>
+                                                        <option value="b'0'">No</option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 m-auto d-flex flex-column">
+                                                <label class="text-center" for="internet">Room Type</label>
+                                                <select class="col-md-12 m-auto" name="type" value="<?php echo $dataRoom['id']; ?>">
+                                                    <?php
+                                                    $types = $conec->getTypes();
+                                                    foreach ($types as $type) {
+
+                                                        if ($dataRoom['id'] == $type['id']) {
+                                                            ?>
+
+                                                            <option value="<?php echo $type['id'] ?>" selected><?php echo $type['tipo_habitacion'] ?></option>
+                                                        <?php } else { ?>
+                                                            <option value="<?php echo $type['id'] ?>"><?php echo $type['tipo_habitacion'] ?></option>
+                                                            <?php
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                            <input type="hidden" name="id" value="<?php echo $dataRoom['id']; ?>">
+                                            <div class=" justify-content-center m-auto">
+                                                <input class="btn-success btn col-md-12 m-2" type="submit" name="update-room" value="Update room">
+                                            </div>
+                                        </div>
+                                </div>
+                                </form>
+                                <?php
+                            }
+                        }
+                        ?>
+                        <h1 class="col-md-6 m-auto text-center ">USERPAGE PANEL</h1>
+                        <?php
+                        $reservas = $conec->getReserves($user->id);
+                        if (!empty($reservas)) {
+                            ?>
+                            <div class="col-md-12 justify-content-center d-flex flex-column mt-2">
+                                <h4 class="col-md-12 m-auto p-2 text-center">YOUR RESERVES</h4>
+
+                                <?php
+                                foreach ($reservas as $reserva) {
+                                    $habitacion = $conec->getReservedRoom($reserva['num_reserva']);
+                                    ?>
+                                    <div class="p-0 pt-2 pb-2 col-md-8 m-auto border border-primary text-center">
+                                        <span>Reserve ID: <?php echo $reserva['num_reserva']; ?> Room: <?php echo $habitacion[0]['tipo_habitacion'] ?>  CheckIn date: <?php echo $reserva['fecha_entrada']; ?> CheckOut date: <?php echo $reserva['fecha_salida']; ?> Price <?php echo $habitacion[1]['precio'] * $reserva['num_dias'] . "€" ?> Validated: <?php
+                                            if ($reserva['validada'] == 1) {
+                                                echo "Yes";
+                                            } else {
+                                                echo "Pending";
+                                            };
+                                            ?> </span>
+                                    </div>    
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
+                        <hr>
+                        <div class="col-md-12 justify-content-center d-flex flex-row mt-2">
+                            <div class="col-md-6 justify-content-center d-flex flex-column mt-2">
+                                <h4 class="col-md-12 m-auto p-2 text-center">USER DATA</h4>
+                                <div class="col-md-12 m-auto p-2 text-center">
+                                    <p>Name: <?php echo $user->nombre; ?></p>
+                                    <p>Email: <?php echo $user->email; ?></p>
+                                    <p>Phone Number: <?php echo $user->telf; ?></p>
+                                    <?php if ($user->direccion != "") { ?>
+                                        <p>Adress: <?php echo $user->direccion; ?></p>
                                     <?php } ?>
                                 </div>
-                            <?php } ?>
-                            <hr>
-                            <div class="col-md-12 justify-content-center d-flex flex-row mt-2">
-                                <div class="col-md-6 justify-content-center d-flex flex-column mt-2">
-                                    <h4 class="col-md-12 m-auto p-2 text-center">USER DATA</h4>
-                                    <div class="col-md-12 m-auto p-2 text-center">
-                                        <p>Name: <?php echo $user->nombre; ?></p>
-                                        <p>Email: <?php echo $user->email; ?></p>
-                                        <p>Phone Number: <?php echo $user->telf; ?></p>
-                                        <?php if ($user->direccion != "") { ?>
-                                            <p>Adress: <?php echo $user->direccion; ?></p>
-                                        <?php } ?>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 justify-content-center d-flex flex-column mt-2">
-                                    <h4 class="col-md-12 m-auto p-2 text-center">UPDATE USER DATA</h4>
-                                    <form class="col-md-12 m-auto p-2 text-center" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" METHOD="post">
-                                        <label for="name">Name: </label><input class="col-md-6" type="text" name="name" value="<?php echo $user->nombre; ?>"><br><br>
-                                        <label for="emal">Email: </label><input class="col-md-6" type="text" name="email" value="<?php echo $user->email; ?>"><br><br>
-                                        <label for="telf">Telefono: </label><input class="col-md-6" type="text" name="telf" value="<?php echo $user->telf; ?>"><br><br>
-                                        <label for="address">Address: </label><input class="col-md-6 ml-2" type="text" name="address" value="<?php
-                                        if ($user->direccion != "") {
-                                            echo $user->direccion;
-                                        }
-                                        ?>"><br>
-                                        <input class="btn-primary btn col-md-2 m-2" type="submit" name="update" value="Update Info">
-
-                                    </form>
-                                </div>
                             </div>
-                            <hr>
-<?php } ?> 
+                            <div class="col-md-6 justify-content-center d-flex flex-column mt-2">
+                                <h4 class="col-md-12 m-auto p-2 text-center">UPDATE USER DATA</h4>
+                                <form class="col-md-12 m-auto p-2 text-center" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" METHOD="post">
+                                    <label for="name">Name: </label><input class="col-md-6" type="text" name="name" value="<?php echo $user->nombre; ?>"><br><br>
+                                    <label for="emal">Email: </label><input class="col-md-6" type="text" name="email" value="<?php echo $user->email; ?>"><br><br>
+                                    <label for="telf">Telefono: </label><input class="col-md-6" type="text" name="telf" value="<?php echo $user->telf; ?>"><br><br>
+                                    <label for="address">Address: </label><input class="col-md-6 ml-2" type="text" name="address" value="<?php
+                                    if ($user->direccion != "") {
+                                        echo $user->direccion;
+                                    }
+                                    ?>"><br>
+                                    <input class="btn-primary btn col-md-2 m-2" type="submit" name="update" value="Update Info">
+
+                                </form>
+                            </div>
+                        </div>
+                        <hr>
                     </div>
                 </div>
             </div>
-<?php require_once 'footer.php'; ?>
+            <?php require_once 'footer.php'; ?>
         </div>
     </body>
     <script src="externo/jquery/jquery-3.5.1.min.js"></script>
