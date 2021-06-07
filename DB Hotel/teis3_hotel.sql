@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-06-2021 a las 17:25:01
+-- Tiempo de generación: 07-06-2021 a las 18:43:57
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.10
 
@@ -43,24 +43,32 @@ CREATE TABLE `habitaciones` (
 --
 
 INSERT INTO `habitaciones` (`id`, `m2`, `ventana`, `tipo_de_habitacion`, `servicio_limpieza`, `internet`, `precio`, `disponibilidad`) VALUES
-(1, '20.00', b'0', 1, b'0', b'1', '50.00', b'0'),
-(2, '20.00', b'0', 1, b'0', b'1', '50.00', b'0'),
-(3, '15.00', b'0', 2, b'1', b'1', '60.00', b'0'),
-(4, '20.00', b'0', 4, b'0', b'0', '65.00', b'0'),
+(1, '20.00', b'0', 1, b'0', b'1', '50.00', b'1'),
+(2, '20.00', b'0', 1, b'0', b'1', '50.00', b'1'),
+(3, '15.00', b'0', 2, b'1', b'1', '60.00', b'1'),
+(4, '20.00', b'0', 4, b'0', b'0', '65.00', b'1'),
 (5, '10.00', b'1', 5, b'0', b'0', '35.00', b'1'),
-(6, '25.00', b'1', 6, b'1', b'1', '100.00', b'1'),
+(6, '25.00', b'0', 6, b'0', b'0', '150.00', b'1'),
 (7, '10.00', b'1', 2, b'1', b'1', '20.00', b'1'),
 (8, '10.00', b'1', 2, b'1', b'1', '20.00', b'1'),
-(9, '10.00', b'0', 2, b'0', b'0', '20.00', b'1'),
+(9, '10.00', b'0', 2, b'0', b'0', '20.00', b'0'),
 (10, '10.00', b'0', 2, b'0', b'0', '20.00', b'1'),
 (11, '10.00', b'0', 2, b'0', b'0', '20.00', b'1'),
 (12, '10.00', b'0', 2, b'0', b'0', '40.00', b'1'),
-(13, '100.00', b'0', 6, b'0', b'0', '5000.00', b'1'),
-(14, '100.00', b'0', 6, b'0', b'0', '5000.00', b'1'),
-(15, '5.00', b'0', 5, b'0', b'0', '15.00', b'1'),
-(16, '5.00', b'0', 5, b'0', b'0', '15.00', b'1'),
-(17, '5.00', b'0', 5, b'0', b'0', '15.00', b'1'),
-(18, '50.00', b'0', 4, b'0', b'0', '70.00', b'1');
+(13, '100.00', b'0', 6, b'0', b'0', '5000.00', b'0'),
+(14, '100.00', b'0', 6, b'0', b'0', '5000.00', b'0'),
+(15, '5.00', b'0', 5, b'0', b'0', '15.00', b'0'),
+(16, '5.00', b'0', 5, b'0', b'0', '15.00', b'0'),
+(17, '5.00', b'0', 5, b'0', b'0', '15.00', b'0'),
+(18, '50.00', b'0', 4, b'0', b'0', '70.00', b'0'),
+(19, '10.00', b'0', 5, b'0', b'0', '20.00', b'0'),
+(20, '10.00', b'0', 1, b'0', b'0', '25.00', b'0'),
+(21, '10.00', b'0', 1, b'0', b'0', '25.00', b'0'),
+(22, '10.00', b'0', 4, b'0', b'0', '40.00', b'0'),
+(23, '10.00', b'0', 4, b'0', b'0', '40.00', b'1'),
+(24, '10.00', b'0', 4, b'0', b'0', '40.00', b'1'),
+(25, '10.00', b'0', 4, b'0', b'0', '40.00', b'1'),
+(26, '10.00', b'0', 4, b'0', b'0', '40.00', b'1');
 
 -- --------------------------------------------------------
 
@@ -82,11 +90,11 @@ INSERT INTO `habitaciones_reservas` (`id`, `num_reserva`, `id_habitacion`) VALUE
 (1, 1, 1),
 (19, 36, 2),
 (20, 37, 4),
-(23, 40, 3),
-(24, 41, 3),
 (35, 52, 14),
 (36, 53, 17),
-(37, 54, 17);
+(37, 54, 17),
+(38, 55, 5),
+(39, 56, 26);
 
 -- --------------------------------------------------------
 
@@ -106,10 +114,12 @@ CREATE TABLE `habitacion_servicio` (
 --
 
 INSERT INTO `habitacion_servicio` (`id_habitacion`, `id_servicio`, `fecha_servicio`, `fecha_fin_servicio`) VALUES
+(1, 1, '2021-06-03 00:00:00', '2021-06-05 00:00:00'),
 (4, 2, '2021-06-01 00:00:00', '2021-06-30 00:00:00'),
 (5, 1, '2021-06-01 00:00:00', '2021-06-06 00:00:00'),
 (14, 1, '2021-06-02 00:00:00', '2021-06-05 00:00:00'),
-(17, 1, '2021-06-02 00:00:00', '2021-06-06 00:00:00');
+(17, 1, '2021-06-02 00:00:00', '2021-06-06 00:00:00'),
+(26, 1, '2021-06-02 00:00:00', '2021-06-06 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -213,14 +223,32 @@ INSERT INTO `log` (`user`, `fecha`) VALUES
 (2, '2021-06-01 22:03:35'),
 (2, '2021-06-01 22:06:55'),
 (2, '2021-06-02 09:56:44'),
+(2, '2021-06-02 15:41:59'),
+(2, '2021-06-02 17:34:02'),
+(2, '2021-06-03 09:24:13'),
+(2, '2021-06-03 11:08:22'),
+(2, '2021-06-04 02:35:40'),
+(2, '2021-06-04 11:23:11'),
+(2, '2021-06-04 15:13:02'),
+(2, '2021-06-04 15:33:05'),
 (4, '2021-05-30 21:52:46'),
 (4, '2021-05-31 17:00:57'),
 (4, '2021-05-31 20:01:05'),
 (4, '2021-06-01 19:38:57'),
 (4, '2021-06-01 19:40:17'),
+(4, '2021-06-02 15:41:19'),
+(4, '2021-06-03 10:36:03'),
+(4, '2021-06-03 11:38:27'),
+(4, '2021-06-03 21:28:25'),
+(4, '2021-06-03 21:37:05'),
+(4, '2021-06-04 02:36:00'),
+(4, '2021-06-04 11:16:55'),
+(4, '2021-06-04 11:19:19'),
 (6, '2021-05-31 20:49:17'),
 (7, '2021-06-01 11:54:05'),
-(8, '2021-06-01 12:09:36');
+(8, '2021-06-01 12:09:36'),
+(10, '2021-06-03 09:23:03'),
+(12, '2021-06-03 11:07:18');
 
 -- --------------------------------------------------------
 
@@ -246,11 +274,11 @@ INSERT INTO `reservas` (`num_reserva`, `id_usuario`, `fecha_reserva`, `num_dias`
 (1, 4, '2021-05-28 07:56:33', 3, '2021-05-29', '2021-06-01', b'1'),
 (36, 4, '2021-05-31 19:42:58', 6, '2021-05-31', '2021-06-06', b'1'),
 (37, 7, '2021-06-01 11:55:10', 29, '2021-06-01', '2021-06-30', b'1'),
-(40, 4, '2021-06-01 19:46:18', 4, '2021-06-01', '2021-06-05', b'0'),
-(41, 4, '2021-06-01 21:20:21', 4, '2021-06-01', '2021-06-05', b'0'),
-(52, 2, '2021-06-02 14:28:17', 3, '2021-06-02', '2021-06-05', b'0'),
-(53, 2, '2021-06-02 14:29:13', 2, '2021-06-05', '2021-06-07', b'0'),
-(54, 2, '2021-06-02 14:29:26', 2, '2021-06-05', '2021-06-07', b'0');
+(52, 2, '2021-06-02 14:28:17', 3, '2021-06-02', '2021-06-05', b'1'),
+(53, 2, '2021-06-02 14:29:13', 2, '2021-06-05', '2021-06-07', b'1'),
+(54, 2, '2021-06-02 14:29:26', 2, '2021-06-05', '2021-06-07', b'1'),
+(55, 4, '2021-06-02 15:41:39', 4, '2021-06-02', '2021-06-06', b'1'),
+(56, 2, '2021-06-02 16:45:08', 4, '2021-06-02', '2021-06-06', b'1');
 
 -- --------------------------------------------------------
 
@@ -308,20 +336,24 @@ CREATE TABLE `usuarios` (
   `direccion` varchar(60) NOT NULL,
   `password` varchar(255) NOT NULL,
   `rol_usuario` bigint(20) NOT NULL,
-  `acceso_log` timestamp NULL DEFAULT NULL
+  `acceso_log` timestamp NULL DEFAULT NULL,
+  `modificacion_log` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `email`, `telf`, `direccion`, `password`, `rol_usuario`, `acceso_log`) VALUES
-(2, 'maruxa', 'javierloureiro2a@gmail.com', '664682983', '', '$2y$10$OZzozR0FtFtlCND1PV3RdOv1MMymv.yaSCF..kXeHPg9yixb00mGm', 1, '2021-06-02 09:56:44'),
-(4, 'Suso', 'pruebaconwordpress2021@gmail.com', '662492933', '', '$2y$10$dl/PR0JXoIGuVwwQgNV2C.EXGps6HQr7Et9IP99FEPugNmptAk3ei', 2, '2021-06-01 19:38:58'),
-(5, 'susillo', 'susoloko5@gmail.com', '664567899', '', '$2y$10$4gQIde052qOQYXiHcffxCOS0n08Z012F9sBMinAuvSme7n.mggNPC', 2, NULL),
-(6, 'Tu madre', 'susoloko7@gmail.com', '664567898', '', '$2y$10$1qfhuXdz4upTGZtRSu04N.5XGFI/c8tOP804S2Irv1zIyfYENbPx6', 2, NULL),
-(7, 'mimama', 'susoloko8@gmail.com', '664682984', '', '$2y$10$SlOif8NZaktH3ZJ4YbtQU.5GXqomR2Oxmt39x.dKGISy7CY1vyayC', 2, NULL),
-(8, 'Suso2', 'susoloko66@gmail.com', '664682989', '', '$2y$10$dyz25a.C0t0XBanrrWoB/ecBHfubV6C3h3DiNgnsmaJN/8eQm5egC', 2, NULL);
+INSERT INTO `usuarios` (`id`, `nombre`, `email`, `telf`, `direccion`, `password`, `rol_usuario`, `acceso_log`, `modificacion_log`) VALUES
+(2, 'maruxa', 'javierloureiro2a@gmail.com', '664682983', '', '$2y$10$OZzozR0FtFtlCND1PV3RdOv1MMymv.yaSCF..kXeHPg9yixb00mGm', 1, '2021-06-02 15:41:59', NULL),
+(4, 'Suso', 'pruebaconwordpress2021@gmail.com', '662492933', 'Casa de suso 665', '$2y$10$dl/PR0JXoIGuVwwQgNV2C.EXGps6HQr7Et9IP99FEPugNmptAk3ei', 2, '2021-06-02 15:41:19', '2021-06-04 02:52:00'),
+(5, 'susillo', 'susoloko5@gmail.com', '664567899', '', '$2y$10$4gQIde052qOQYXiHcffxCOS0n08Z012F9sBMinAuvSme7n.mggNPC', 2, NULL, NULL),
+(6, 'Tu madre', 'susoloko7@gmail.com', '664567898', '', '$2y$10$1qfhuXdz4upTGZtRSu04N.5XGFI/c8tOP804S2Irv1zIyfYENbPx6', 2, NULL, NULL),
+(7, 'mimama', 'susoloko8@gmail.com', '664682984', '', '$2y$10$SlOif8NZaktH3ZJ4YbtQU.5GXqomR2Oxmt39x.dKGISy7CY1vyayC', 2, NULL, NULL),
+(8, 'Suso2', 'susoloko66@gmail.com', '664682989', '', '$2y$10$dyz25a.C0t0XBanrrWoB/ecBHfubV6C3h3DiNgnsmaJN/8eQm5egC', 2, NULL, NULL),
+(10, 'proba', 'susoloko12@gmail.com', '664682988', '', '$2y$10$0YnVVCHq6GH6trq3jsMc3e05bWyvuv9cgRSKr0MT.Jjc9JBdzzCDu', 2, NULL, NULL),
+(11, 'proba', 'proba@gmail.com', '986330028', '', '$2y$10$7GRA8jPGRo3BT8AOnReaEuzofw.VBdcZPIDODa2S9uR9/8xmQTjbG', 2, NULL, NULL),
+(12, 'Suso6', 'susoloko66666@gmail.com', '986330027', '', '$2y$10$Nc48NVVlS5bxM2FaizY3M.4Fk6NrZQPxSdAW8YOXAEHXMOZtU3HbK', 2, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -407,13 +439,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `habitaciones`
 --
 ALTER TABLE `habitaciones`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `habitaciones_reservas`
 --
 ALTER TABLE `habitaciones_reservas`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion_tipo`
@@ -431,7 +463,7 @@ ALTER TABLE `imagenes_habitaciones`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `num_reserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT de la tabla `servicios`
@@ -443,7 +475,7 @@ ALTER TABLE `servicios`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas

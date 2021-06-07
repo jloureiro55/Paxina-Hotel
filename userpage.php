@@ -114,7 +114,7 @@ $tool = new func();
 
                                     <form class="d-grid p-2 m-auto" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
                                         <h3 class="col-md-12 m-auto p-2 text-center">Validate Reserves</h3>
-                                        <select class="col-md-12 m-auto" name="reservas[]" multiple="multiple">
+                                        <select class="col-12 m-auto" name="reservas[]" multiple="multiple">
                                             <?php
                                             foreach ($reservas as $reserva) {
                                                 echo '<option value="' . $reserva['reserva'] . '">Reserve Nº: ' . $reserva['reserva'] . ' CheckIn: ' . $reserva['entrada'] . ' CheckOut: ' . $reserva['salida'] . ' Room: ' . $reserva['habitacion'] . '</option>';
@@ -135,10 +135,10 @@ $tool = new func();
                             ?>
                             <div>
                                 <h3 class="col-md-12 m-auto p-2 text-center">Modify Room State</h3>
-                                <div class="col-md-12 justify-content-center d-flex flex-row mt-2">
-                                    <form class="d-grid p-2 m-auto" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                                <div class="col-12 justify-content-center d-flex flex-md-row mt-2 flex-column">
+                                    <form class="d-grid p-2 m-auto col-md-6 col-12" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
                                         <h4 class="col-md-12 m-auto p-2 text-center">Disable Rooms</h4>
-                                        <select class="col-md-12 m-auto" name="habitaciones[]" multiple="multiple">
+                                        <select class="col-md-8 col-12 m-auto" name="habitaciones[]" multiple="multiple">
                                             <?php
                                             foreach ($available as $room) {
                                                 echo '<option value="' . $room->id . '">ID:' . $room->id . ' Room Type: ' . $conec->loadRoomData($room->tipo)['tipo_habitacion'] . ' Precio: ' . $room->precio . '</option>';
@@ -149,9 +149,9 @@ $tool = new func();
                                             <input class="btn-success btn col-md-3 m-2" type="submit" name="disable" value="Disable">
                                         </div>
                                     </form>
-                                    <form class="d-grid p-2 m-auto" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                                    <form class="d-grid p-2 m-auto col-md-6 col-12" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
                                         <h4 class="col-md-12 m-auto p-2 text-center">Enable Rooms</h4>
-                                        <select class="col-md-12 m-auto" name="habitaciones[]" multiple="multiple">
+                                        <select class="col-md-8 m-auto col-12" name="habitaciones[]" multiple="multiple">
                                             <?php
                                             foreach ($disabled as $room) {
                                                 echo '<option value="' . $room->id . '">ID:' . $room->id . ' Room Type: ' . $conec->loadRoomData($room->tipo)['tipo_habitacion'] . ' Precio: ' . $room->precio . '</option>';
@@ -167,7 +167,7 @@ $tool = new func();
                             <hr>
                             <div>
                                 <h3 class="col-md-12 m-auto p-2 text-center">Create new Room</h3>
-                                <form class="d-flex p-2 m-auto flex-row" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                                <form class="d-flex p-2 m-auto flex-md-row flex-column" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
                                     <div class="col-md-6 d-flex flex-column">
                                         <div class="col-md-4 m-auto d-flex flex-column">
                                             <label class="text-center"  for="m2">m2 Room</label><input type="number" name="m2" placeholder="m2" min="1">
@@ -308,7 +308,7 @@ $tool = new func();
                                 ?>
                                 <h3 class="col-md-12 m-auto p-2 text-center">MODIFYING ROOM ID: <?php echo $dataRoom['id']; ?></h3>
                                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
-                                <div class="d-flex p-2 m-auto flex-row">
+                                <div class="d-flex p-2 m-auto flex-md-row flex-column">
                                     
                                         <div class="col-md-6 d-flex flex-column">
                                             <div class="col-md-4 m-auto d-flex flex-column">
@@ -373,6 +373,7 @@ $tool = new func();
 
                                                         if ($dataRoom['id'] == $type['id']) {
                                                             ?>
+
                                                             <option value="<?php echo $type['id'] ?>" selected><?php echo $type['tipo_habitacion'] ?></option>
                                                         <?php } else { ?>
                                                             <option value="<?php echo $type['id'] ?>"><?php echo $type['tipo_habitacion'] ?></option>
@@ -418,7 +419,7 @@ $tool = new func();
                             </div>
                         <?php } ?>
                         <hr>
-                        <div class="col-md-12 justify-content-center d-flex flex-row mt-2">
+                        <div class="col-md-12 justify-content-center d-flex flex-md-row flex-column mt-2">
                             <div class="col-md-6 justify-content-center d-flex flex-column mt-2">
                                 <h4 class="col-md-12 m-auto p-2 text-center">USER DATA</h4>
                                 <div class="col-md-12 m-auto p-2 text-center">
